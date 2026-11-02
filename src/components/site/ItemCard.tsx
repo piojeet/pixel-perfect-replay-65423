@@ -31,8 +31,14 @@ export function ItemCard({ item, tall }: { item: Item; tall?: boolean }) {
   const copyable = item.kind === "background" ? built.css : [built.html, `<style>\n${built.css}\n</style>`, built.js ? `<script>\n${built.js}\n</script>` : ""].filter(Boolean).join("\n\n");
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card">
-      <div className={tall ? "h-56" : "h-44"}>
-        <Preview built={built} bg={p.bg} title={item.name} interactive={item.kind !== "background"} />
+      <div className={"relative overflow-hidden " + (tall ? "h-56" : "h-44")} style={{ background: p.bg }}>
+        {item.kind === "background" ? (
+          <Preview built={built} bg={p.bg} title={item.name} interactive={false} />
+        ) : (
+          <div className="absolute left-0 top-0 h-[143%] w-[143%] origin-top-left scale-[0.7]">
+            <Preview built={built} bg={p.bg} title={item.name} />
+          </div>
+        )}
       </div>
       <div className="flex items-start gap-3 border-t border-border p-4">
         <div className="min-w-0 flex-1">

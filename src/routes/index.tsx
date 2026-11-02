@@ -89,7 +89,7 @@ function Home() {
       </Section>
 
       <Section title="Backgrounds" link={{ to: "/backgrounds", label: "All backgrounds" }}>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{backgroundItems.filter((b) => b.featured).map((i) => <ItemCard key={i.slug} item={i} />)}</div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{backgroundItems.filter((b) => b.featured).map((i) => <ItemCard key={i.slug} item={i} />)}</div>
       </Section>
 
       <Section title="Interactive Effects" link={{ to: "/effects", label: "All effects" }}>

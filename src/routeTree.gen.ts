@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BackgroundsIndexRouteImport } from './routes/backgrounds.index'
+import { Route as BackgroundsSlugRouteImport } from './routes/backgrounds.$slug'
+import { Route as ComponentsIndexRouteImport } from './routes/components.index'
+import { Route as EffectsIndexRouteImport } from './routes/effects.index'
+import { Route as EffectsSlugRouteImport } from './routes/effects.$slug'
+import { Route as ComponentsCategorySlugRouteImport } from './routes/components.$category.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BackgroundsIndexRoute = BackgroundsIndexRouteImport.update({
+  id: '/backgrounds/',
+  path: '/backgrounds/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BackgroundsSlugRoute = BackgroundsSlugRouteImport.update({
+  id: '/backgrounds/$slug',
+  path: '/backgrounds/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsIndexRoute = ComponentsIndexRouteImport.update({
+  id: '/components/',
+  path: '/components/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EffectsIndexRoute = EffectsIndexRouteImport.update({
+  id: '/effects/',
+  path: '/effects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EffectsSlugRoute = EffectsSlugRouteImport.update({
+  id: '/effects/$slug',
+  path: '/effects/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsCategorySlugRoute = ComponentsCategorySlugRouteImport.update({
+  id: '/components/$category/$slug',
+  path: '/components/$category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/backgrounds/$slug': typeof BackgroundsSlugRoute
+  '/effects/$slug': typeof EffectsSlugRoute
+  '/backgrounds/': typeof BackgroundsIndexRoute
+  '/components/': typeof ComponentsIndexRoute
+  '/effects/': typeof EffectsIndexRoute
+  '/components/$category/$slug': typeof ComponentsCategorySlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/backgrounds/$slug': typeof BackgroundsSlugRoute
+  '/effects/$slug': typeof EffectsSlugRoute
+  '/backgrounds': typeof BackgroundsIndexRoute
+  '/components': typeof ComponentsIndexRoute
+  '/effects': typeof EffectsIndexRoute
+  '/components/$category/$slug': typeof ComponentsCategorySlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/backgrounds/$slug': typeof BackgroundsSlugRoute
+  '/effects/$slug': typeof EffectsSlugRoute
+  '/backgrounds/': typeof BackgroundsIndexRoute
+  '/components/': typeof ComponentsIndexRoute
+  '/effects/': typeof EffectsIndexRoute
+  '/components/$category/$slug': typeof ComponentsCategorySlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/backgrounds/$slug'
+    | '/effects/$slug'
+    | '/backgrounds/'
+    | '/components/'
+    | '/effects/'
+    | '/components/$category/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/backgrounds/$slug'
+    | '/effects/$slug'
+    | '/backgrounds'
+    | '/components'
+    | '/effects'
+    | '/components/$category/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/backgrounds/$slug'
+    | '/effects/$slug'
+    | '/backgrounds/'
+    | '/components/'
+    | '/effects/'
+    | '/components/$category/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BackgroundsSlugRoute: typeof BackgroundsSlugRoute
+  EffectsSlugRoute: typeof EffectsSlugRoute
+  BackgroundsIndexRoute: typeof BackgroundsIndexRoute
+  ComponentsIndexRoute: typeof ComponentsIndexRoute
+  EffectsIndexRoute: typeof EffectsIndexRoute
+  ComponentsCategorySlugRoute: typeof ComponentsCategorySlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/backgrounds/': {
+      id: '/backgrounds/'
+      path: '/backgrounds'
+      fullPath: '/backgrounds/'
+      preLoaderRoute: typeof BackgroundsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/backgrounds/$slug': {
+      id: '/backgrounds/$slug'
+      path: '/backgrounds/$slug'
+      fullPath: '/backgrounds/$slug'
+      preLoaderRoute: typeof BackgroundsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/': {
+      id: '/components/'
+      path: '/components'
+      fullPath: '/components/'
+      preLoaderRoute: typeof ComponentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/effects/': {
+      id: '/effects/'
+      path: '/effects'
+      fullPath: '/effects/'
+      preLoaderRoute: typeof EffectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/effects/$slug': {
+      id: '/effects/$slug'
+      path: '/effects/$slug'
+      fullPath: '/effects/$slug'
+      preLoaderRoute: typeof EffectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/$category/$slug': {
+      id: '/components/$category/$slug'
+      path: '/components/$category/$slug'
+      fullPath: '/components/$category/$slug'
+      preLoaderRoute: typeof ComponentsCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BackgroundsSlugRoute: BackgroundsSlugRoute,
+  EffectsSlugRoute: EffectsSlugRoute,
+  BackgroundsIndexRoute: BackgroundsIndexRoute,
+  ComponentsIndexRoute: ComponentsIndexRoute,
+  EffectsIndexRoute: EffectsIndexRoute,
+  ComponentsCategorySlugRoute: ComponentsCategorySlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

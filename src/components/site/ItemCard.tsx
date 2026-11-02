@@ -41,7 +41,7 @@ export function ItemCard({ item, tall }: { item: Item; tall?: boolean }) {
             {item.kind === "component" && <span className="text-[11px] text-muted-foreground">HTML · CSS{built.js ? " · JS" : ""} · React</span>}
           </div>
           <h3 className="truncate text-sm font-semibold">
-            <ItemLink item={item} className="after:absolute after:inset-x-0 after:bottom-0 after:top-[inherit] focus-visible:outline-none">
+            <ItemLink item={item} className="hover:text-primary">
               {item.name}
             </ItemLink>
           </h3>

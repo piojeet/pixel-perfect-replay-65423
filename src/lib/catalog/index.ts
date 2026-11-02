@@ -13,6 +13,7 @@ export const CATEGORIES: Record<Kind, { slug: string; label: string; description
     { slug: "inputs", label: "Inputs", description: "Text fields and search" },
     { slug: "badges", label: "Badges", description: "Counters and labels" },
     { slug: "alerts", label: "Alerts", description: "Status messages" },
+    { slug: "toasts", label: "Toasts", description: "Temporary notification messages" },
     { slug: "avatars", label: "Avatars", description: "User pictures and groups" },
     { slug: "tooltips", label: "Tooltips", description: "Hints on hover" },
     { slug: "navigation", label: "Navigation Bars", description: "Menus and navbars" },

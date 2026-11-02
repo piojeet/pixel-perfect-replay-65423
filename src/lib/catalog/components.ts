@@ -523,4 +523,133 @@ modal.addEventListener("click", (e) => e.target === modal && modal.close());`,
       };
     },
   },
+  {
+    slug: "gooey-drop-toast",
+    name: "Gooey Drop Toast",
+    kind: "component",
+    category: "toasts",
+    description: "A gooey animated toast that drops in, splashes into place, and melts away.",
+    controls: ["primary", "bg", "radius"],
+    defaults: { primary: "#8B5CF6", bg: "#0B0F1E", radius: 22 },
+    added: 17,
+    build: (p) => ({
+      html: `<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"/>
+    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/></filter>
+</svg>
+<div class="goo">
+  <div class="blob" id="drop"></div>
+  <div class="blob" id="toast"></div>
+  <div class="blob bit"></div><div class="blob bit"></div><div class="blob bit"></div>
+  <div class="blob bit"></div><div class="blob bit"></div><div class="blob bit"></div>
+  <div class="blob drip"></div><div class="blob drip"></div>
+</div>
+<div id="content">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-6"/></svg>
+  <div><b>Saved!</b><span>Your changes are live.</span></div>
+</div>
+<main>
+  <h1>Gooey Drop</h1>
+  <p>A drop falls, splats, and melts into a toast.</p>
+  <button id="again" disabled>Drop again</button>
+</main>`,
+      css: `:root {
+  --bg: ${p.bg}; --fg: #e9e6ff; --goo: ${p.primary}; --on-goo: #fff; --btn: #e9e6ff; --btn-fg: #14122b;
+  --top: calc(env(safe-area-inset-top, 0px) + 40px);
+  box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: dark;
+}
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; display: grid; place-items: center; }
+.goo { position: fixed; inset: 0; filter: url(#goo); pointer-events: none; }
+.blob { position: absolute; left: 50%; top: var(--top); background: var(--goo); border-radius: 50%; opacity: 0; }
+#drop { width: 30px; height: 30px; transform: translate(-50%, -300px); }
+#toast { width: 30px; height: 30px; transform: translateX(-50%); }
+.bit { width: 12px; height: 12px; margin-top: 9px; }
+.drip { width: 16px; height: 16px; }
+#content {
+  position: fixed; left: 50%; top: var(--top); transform: translateX(-50%); height: 64px; display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; box-sizing: border-box; color: var(--on-goo); opacity: 0; white-space: nowrap; pointer-events: none;
+}
+#content svg { flex: none; }
+#content b { display: block; font-size: 15px; }
+#content span { display: block; font-size: 13px; opacity: .85; }
+main { text-align: center; padding: 24px; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+p { margin: 0 0 20px; opacity: .7; font-size: 14px; }
+button { font: inherit; font-weight: 600; border: 0; border-radius: 999px; padding: 12px 24px; background: var(--btn); color: var(--btn-fg); cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }`,
+      js: `(function(){
+  var drop=document.getElementById('drop'), toast=document.getElementById('toast'),
+      content=document.getElementById('content'), btn=document.getElementById('again'),
+      bits=[].slice.call(document.querySelectorAll('.bit')),
+      drips=[].slice.call(document.querySelectorAll('.drip'));
+  var wait=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
+  var A=function(el,k,o){o.fill='forwards';return el.animate(k,o).finished;};
+
+  async function run(){
+    btn.disabled=true;
+    var viewportWidth=document.documentElement.clientWidth||window.innerWidth||320;
+    var w=Math.min(300, viewportWidth*0.9);
+    [drop,toast,content].concat(bits,drips).forEach(function(n){
+      n.getAnimations().forEach(function(a){a.cancel();}); n.style.opacity=0;
+    });
+    content.style.opacity=0; content.style.width=w+'px';
+
+    drop.style.opacity=1;
+    await A(drop,[
+      {transform:'translate(-50%,-300px) scale(.8,1.25)'},
+      {transform:'translate(-50%,0) scale(.85,1.3)'}
+    ],{duration:700,easing:'cubic-bezier(.6,0,1,.7)'});
+
+    drop.style.opacity=0; toast.style.opacity=1;
+    var jobs=[];
+    bits.forEach(function(b,i){
+      var dir=i%2?1:-1, dx=(40+Math.random()*(w/2-30))*dir, up=-(10+Math.random()*28);
+      b.style.opacity=1;
+      jobs.push(A(b,[
+        {transform:'translate(-50%,0) scale(1)'},
+        {transform:'translate(calc(-50% + '+dx*0.6+'px),'+up+'px) scale(1.1)',offset:.45},
+        {transform:'translate(calc(-50% + '+dx+'px),'+(4+Math.random()*8)+'px) scale(.4)'}
+      ],{duration:750,easing:'ease-out'}));
+    });
+    drips.forEach(function(dr,i){
+      var f=i?0.22:-0.28;
+      dr.style.opacity=1;
+      jobs.push(A(dr,[
+        {transform:'translate(calc(-50% + '+f*w+'px),42px) scale(.2)'},
+        {transform:'translate(calc(-50% + '+f*w+'px),66px) scale(1)',offset:.55},
+        {transform:'translate(calc(-50% + '+f*w+'px),42px) scale(.2)'}
+      ],{duration:1100,delay:350+i*140,easing:'ease-in-out'}));
+    });
+    var grow=A(toast,[
+      {width:'30px',height:'30px',borderRadius:'50%',transform:'translateX(-50%)'},
+      {width:(w*0.45)+'px',height:'20px',borderRadius:'24px',transform:'translateX(-50%)',offset:.35},
+      {width:w+'px',height:'64px',borderRadius:'${p.radius}px',transform:'translateX(-50%)'}
+    ],{duration:950,easing:'cubic-bezier(.2,.8,.25,1)'});
+
+    await wait(650);
+    A(content,[{opacity:0,transform:'translate(-50%,8px)'},{opacity:1,transform:'translate(-50%,0)'}],{duration:350,easing:'ease-out'});
+    await grow; await Promise.all(jobs);
+    bits.concat(drips).forEach(function(n){n.style.opacity=0;});
+
+    await wait(5000);
+    await A(content,[{opacity:1},{opacity:0}],{duration:200});
+    await A(toast,[
+      {width:w+'px',height:'64px',borderRadius:'${p.radius}px',transform:'translateX(-50%)'},
+      {width:'30px',height:'30px',borderRadius:'50%',transform:'translateX(-50%)'}
+    ],{duration:550,easing:'cubic-bezier(.6,0,.4,1)'});
+    await A(toast,[
+      {transform:'translateX(-50%) translateY(0) scale(.85,1.25)'},
+      {transform:'translateX(-50%) translateY(520px) scale(.8,1.4)'}
+    ],{duration:700,easing:'cubic-bezier(.6,0,1,.7)'});
+    toast.style.opacity=0;
+    btn.disabled=false;
+  }
+
+  btn.addEventListener('click',run);
+  run();
+})();`,
+    }),
+  },
 ];

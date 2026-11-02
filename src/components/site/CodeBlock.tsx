@@ -55,7 +55,7 @@ function highlight(code: string, lang: Lang): ReactNode[] {
       const w = /[\w$]+/y;
       w.lastIndex = i;
       const m = w.exec(code);
-      const chunk = m ? m[0] : code[i];
+      const chunk = m ? m[0] : (code[i] ?? "");
       plain += chunk;
       i += chunk.length;
     }
@@ -64,7 +64,7 @@ function highlight(code: string, lang: Lang): ReactNode[] {
   return out;
 }
 
-export function CodeBlock({ code, lang, maxH }: { code: string; lang: Lang; maxH?: string }) {
+export function CodeBlock({ code, lang, maxH }: { code: string; lang: Lang; maxH?: string | undefined }) {
   const lines = code.split("\n");
   return (
     <div className="overflow-auto bg-code font-mono text-[12.5px] leading-6" style={{ maxHeight: maxH }}>

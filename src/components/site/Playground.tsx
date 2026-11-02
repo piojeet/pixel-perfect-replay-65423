@@ -52,7 +52,7 @@ function SliderRow({ label, value, min, max, step = 1, unit = "", onChange }: { 
         <span>{label}</span>
         <span className="font-mono">{value}{unit}</span>
       </div>
-      <Slider value={[value]} min={min} max={max} step={step} onValueChange={([v]) => onChange(v)} aria-label={label} />
+      <Slider value={[value]} min={min} max={max} step={step} onValueChange={([v]) => onChange(v ?? value)} aria-label={label} />
     </div>
   );
 }
@@ -80,13 +80,13 @@ export function Playground({ item, backTo }: { item: Item; backTo: { href: "/com
     { id: "css", label: "CSS", code: built.css.replace(/\n\s*\n/g, "\n").replace(/^\s+\n/gm, ""), lang: "css", ext: "css" },
     ...(built.js ? [{ id: "js" as Tab, label: "JavaScript", code: built.js, lang: "js" as const, ext: "js" }] : []),
   ];
-  const current = tabs.find((t) => t.id === tab) ?? tabs[0];
+  const current = tabs.find((t) => t.id === tab) ?? tabs[0]!;
   const fileBase = item.slug;
 
   const siblings = itemsOf(item.kind);
   const idx = siblings.findIndex((s) => s.slug === item.slug);
-  const prev = siblings[(idx - 1 + siblings.length) % siblings.length];
-  const next = siblings[(idx + 1) % siblings.length];
+  const prev = siblings[(idx - 1 + siblings.length) % siblings.length]!;
+  const next = siblings[(idx + 1) % siblings.length]!;
   const related = siblings.filter((s) => s.category === item.category && s.slug !== item.slug).concat(siblings.filter((s) => s.category !== item.category)).slice(0, 3);
   const fav = isFav(item.kind + ":" + item.slug);
 

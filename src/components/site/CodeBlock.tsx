@@ -74,7 +74,7 @@ export function CodeBlock({ code, lang, maxH }: { code: string; lang: Lang; maxH
             <div key={i}>{i + 1}</div>
           ))}
         </div>
-        <pre className="py-4 pr-6 text-foreground">
+        <pre className="py-4 pr-6 text-code-foreground">
           <code>
             {highlight(code, lang).map((n, i) => (
               <Fragment key={i}>{n}</Fragment>

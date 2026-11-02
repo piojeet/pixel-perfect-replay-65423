@@ -38,6 +38,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
   --color-tok-key: var(--tok-key);
   --color-tok-str: var(--tok-str);
   --color-tok-com: var(--tok-com);
@@ -72,6 +73,7 @@
   --input: oklch(0.29 0.04 272);
   --ring: oklch(0.606 0.219 293);
   --code: oklch(0.13 0.022 270);
+  --code-foreground: oklch(0.93 0.01 260);
   --tok-key: oklch(0.75 0.15 300);
   --tok-str: oklch(0.8 0.13 150);
   --tok-com: oklch(0.55 0.03 260);

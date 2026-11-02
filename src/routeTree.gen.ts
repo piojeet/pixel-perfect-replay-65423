@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as BackgroundsIndexRouteImport } from './routes/backgrounds.index'
 import { Route as BackgroundsSlugRouteImport } from './routes/backgrounds.$slug'
 import { Route as ComponentsIndexRouteImport } from './routes/components.index'
@@ -20,6 +21,11 @@ import { Route as ComponentsCategorySlugRouteImport } from './routes/components.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BackgroundsIndexRoute = BackgroundsIndexRouteImport.update({
@@ -55,6 +61,7 @@ const ComponentsCategorySlugRoute = ComponentsCategorySlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/backgrounds/$slug': typeof BackgroundsSlugRoute
   '/effects/$slug': typeof EffectsSlugRoute
   '/backgrounds/': typeof BackgroundsIndexRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/backgrounds/$slug': typeof BackgroundsSlugRoute
   '/effects/$slug': typeof EffectsSlugRoute
   '/backgrounds': typeof BackgroundsIndexRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/backgrounds/$slug': typeof BackgroundsSlugRoute
   '/effects/$slug': typeof EffectsSlugRoute
   '/backgrounds/': typeof BackgroundsIndexRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/backgrounds/$slug'
     | '/effects/$slug'
     | '/backgrounds/'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/backgrounds/$slug'
     | '/effects/$slug'
     | '/backgrounds'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/backgrounds/$slug'
     | '/effects/$slug'
     | '/backgrounds/'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   BackgroundsSlugRoute: typeof BackgroundsSlugRoute
   EffectsSlugRoute: typeof EffectsSlugRoute
   BackgroundsIndexRoute: typeof BackgroundsIndexRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/backgrounds/': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   BackgroundsSlugRoute: BackgroundsSlugRoute,
   EffectsSlugRoute: EffectsSlugRoute,
   BackgroundsIndexRoute: BackgroundsIndexRoute,

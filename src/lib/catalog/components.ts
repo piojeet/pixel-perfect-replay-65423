@@ -12,7 +12,6 @@ export const componentItems: Item[] = [
     controls: BTN,
     featured: true,
     added: 1,
-    props: [["label", "string", "Button text"], ["onClick", "() => void", "Click handler"]],
     build: (p) => {
       const s = SIZES[p.size];
       return {

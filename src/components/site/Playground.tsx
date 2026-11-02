@@ -121,7 +121,7 @@ export function Playground({ item, backTo }: { item: Item; backTo: { href: "/com
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-        <div ref={stageRef} className="overflow-hidden rounded-xl border border-border bg-surface">
+        <div ref={stageRef} className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
           <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
             <div className="flex rounded-lg border border-border p-0.5">
               {(["desktop", "mobile"] as const).map((d) => (
@@ -142,7 +142,7 @@ export function Playground({ item, backTo }: { item: Item; backTo: { href: "/com
               <Button variant="ghost" size="icon" aria-label="Fullscreen" onClick={fullscreen}><Maximize /></Button>
             </div>
           </div>
-          <div className="grid-bg flex h-[420px] items-center justify-center p-4 [:fullscreen_&]:h-[calc(100vh-50px)]">
+          <div className="grid-bg flex h-[420px] flex-1 items-center lg:h-auto lg:min-h-[420px] justify-center p-4 [:fullscreen_&]:h-[calc(100vh-50px)]">
             <div className={"h-full overflow-hidden rounded-lg border border-border transition-all " + (device === "mobile" ? "w-[375px] max-w-full" : "w-full")}>
               <Preview key={nonce} built={built} bg={p.bg} title={item.name} />
             </div>

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { ALL_ITEMS, CATEGORIES, componentItems, backgroundItems, effectItems, findItem, paramsFor } from "@/lib/catalog";
 
 describe("catalog", () => {
-  it("ships 20 components, 12 backgrounds and 12 effects", () => {
-    expect(componentItems).toHaveLength(20);
+  it("ships 78 components, 12 backgrounds and 12 effects", () => {
+    expect(componentItems).toHaveLength(78);
     expect(backgroundItems).toHaveLength(12);
     expect(effectItems).toHaveLength(12);
   });
@@ -74,5 +74,109 @@ describe("catalog", () => {
     expect(built.css).toContain("border-radius: 18px");
     expect(built.js).toContain("var reduce=true");
     expect(built.js).toContain("swing.animate");
+  });
+
+  it("adds Ripple Fill Nav to Navigation Bars", () => {
+    const item = findItem("component", "ripple-fill-nav");
+    expect(item?.category).toBe("navigation");
+    if (!item) throw new Error("Ripple Fill Nav is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", secondary: "#ABCDEF", radius: 18 });
+    expect(built.html).toContain('aria-label="Favorites"');
+    expect(built.css).toContain("--uf-ripple-v: #123456");
+    expect(built.css).toContain("--uf-ripple-c: #ABCDEF");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.js).toContain("ArrowRight");
+    expect(built.js).toContain("uf-ripple-leave");
+  });
+
+  it("adds Jelly Icon Nav to Navigation Bars", () => {
+    const item = findItem("component", "jelly-icon-nav");
+    expect(item?.category).toBe("navigation");
+    if (!item) throw new Error("Jelly Icon Nav is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", bg: "#ABCDEF", radius: 18, animation: false });
+    expect(built.html).toContain('aria-label="Favorites"');
+    expect(built.css).toContain("--uf-jelly-fill: #123456");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.js).toContain("var reduce=true");
+    expect(built.js).toContain("ArrowRight");
+    expect(built.js).toContain("svg.animate(BODY");
+  });
+
+  it("adds Badge Pop Nav to Navigation Bars", () => {
+    const item = findItem("component", "badge-pop-nav");
+    expect(item?.category).toBe("navigation");
+    if (!item) throw new Error("Badge Pop Nav is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", secondary: "#ABCDEF", bg: "#121212", radius: 18, animation: false });
+    expect(built.html).toContain('data-n="5"');
+    expect(built.css).toContain("--uf-badge-ind1: #123456");
+    expect(built.css).toContain("--uf-badge-ind2: #ABCDEF");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.js).toContain("var reduce=true");
+    expect(built.js).toContain("function pop(tab)");
+    expect(built.js).toContain("ArrowRight");
+  });
+
+  it("adds Walking Toggle to Toggles", () => {
+    const item = findItem("component", "walking-toggle");
+    expect(item?.category).toBe("toggles");
+    expect(CATEGORIES.component.some((category) => category.slug === "toggles" && category.label === "Toggles")).toBe(true);
+    if (!item) throw new Error("Walking Toggle is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", bg: "#ABCDEF", radius: 18, animation: false });
+    expect(built.html).toContain('aria-label="Wi-Fi"');
+    expect(built.html).toContain('aria-label="Notifications"');
+    expect(built.html).toContain('aria-label="Auto-save" checked');
+    expect(built.css).toContain("--uf-walk-bg: #ABCDEF");
+    expect(built.css).toContain("--uf-walk-on: #123456");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.css).toContain("animation: none !important");
+    expect(built.js).toContain("var reduce=true");
+    expect(built.js).toContain("state.textContent=input.checked?'On':'Off'");
+  });
+
+  it("registers all 52 modern buttons as separate components", () => {
+    const buttons = componentItems.filter((item) => item.slug.startsWith("modern-button-"));
+    expect(buttons).toHaveLength(52);
+    expect(buttons.every((item) => item.category === "buttons")).toBe(true);
+    expect(new Set(buttons.map((item) => item.name)).size).toBe(52);
+    for (const item of buttons) {
+      const { html, css } = item.build(paramsFor(item));
+      expect(html).toContain("uf-modern-button");
+      expect(html).not.toMatch(/<small>\d{2} ·/);
+      expect(css).toContain("background:transparent");
+      expect(css).not.toContain("radial-gradient(500px circle");
+    }
+  });
+
+  it("adds Frutiger Aero Button to Buttons", () => {
+    const item = findItem("component", "frutiger-aero-button");
+    expect(item?.category).toBe("buttons");
+    if (!item) throw new Error("Frutiger Aero Button is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", animation: false });
+    expect(built.html).toContain(">Primary</button>");
+    expect(built.css).toContain("background-color:#123456");
+    expect(built.css).toContain("#12345699");
+    expect(built.css).toContain("border-radius:9999px");
+    expect(built.css).toContain("transition:none");
+  });
+
+  it("adds the Geo Orbit Button without unrelated page or font-link markup", () => {
+    const item = findItem("component", "geo-orbit-button");
+    expect(item?.category).toBe("buttons");
+    if (!item) throw new Error("Geo Orbit Button is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), animation: false });
+    expect(built.html).toContain(">Contact Us</span>");
+    expect(built.html).not.toContain("<body");
+    expect(built.html).not.toContain("<link");
+    expect(built.css).toContain('@import url("https://fonts.googleapis.com/css2?family=Geo&display=swap")');
+    expect(built.css).toContain("conic-gradient(#fff 0%,#000 3%,#409 60%,#fff 100%)");
+    expect(built.css).toContain("font:700 28px/1 \"Geo\",monospace");
+    expect(built.css).not.toContain("animation:uf-geo");
+    expect(built.js).toBeUndefined();
   });
 });

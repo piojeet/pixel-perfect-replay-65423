@@ -11,6 +11,7 @@ export const CATEGORIES: Record<Kind, { slug: string; label: string; description
     { slug: "dropdowns", label: "Dropdowns", description: "Select menus and pickers" },
     { slug: "cards", label: "Cards", description: "Content containers" },
     { slug: "inputs", label: "Inputs", description: "Text fields and search" },
+    { slug: "toggles", label: "Toggles", description: "Interactive on/off switches" },
     { slug: "badges", label: "Badges", description: "Counters and labels" },
     { slug: "alerts", label: "Alerts", description: "Status messages" },
     { slug: "toasts", label: "Toasts", description: "Temporary notification messages" },

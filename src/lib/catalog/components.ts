@@ -1,4 +1,5 @@
 import { alpha, SIZES, type Item, type ControlKey } from "./types";
+import { frutigerAeroButtonItem, geoOrbitButtonItem, modernButtonItems } from "./modern-buttons";
 
 const BTN: ControlKey[] = ["primary", "secondary", "bg", "size", "radius", "weight", "shadow", "animation"];
 
@@ -929,4 +930,362 @@ button:disabled { opacity: .5; cursor: default; }`,
 })();`,
     }),
   },
+  {
+    slug: "ripple-fill-nav",
+    name: "Ripple Fill Nav",
+    kind: "component",
+    category: "navigation",
+    description: "An icon navigation bar where a vivid gradient ripples into the selected tab.",
+    controls: ["primary", "secondary", "bg", "radius"],
+    defaults: { primary: "#7C6CFF", secondary: "#38C8FF", bg: "#121119", radius: 28 },
+    added: 21,
+    build: (p) => ({
+      html: `<nav class="uf-ripple-nav" id="uf-ripple-nav" aria-label="Main">
+  <button class="uf-ripple-tab" type="button" aria-label="Home" aria-current="true"><i class="uf-ripple-fill uf-ripple-on" aria-hidden="true"></i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></button>
+  <button class="uf-ripple-tab" type="button" aria-label="Search" aria-current="false"><i class="uf-ripple-fill" aria-hidden="true"></i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+  <button class="uf-ripple-tab" type="button" aria-label="Favorites" aria-current="false"><i class="uf-ripple-fill" aria-hidden="true"></i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.3 3.5 9.2A4.7 4.7 0 0 1 12 6.8a4.7 4.7 0 0 1 8.5 2.4c0 6.1-8.5 11.3-8.5 11.3z"/></svg></button>
+  <button class="uf-ripple-tab" type="button" aria-label="Profile" aria-current="false"><i class="uf-ripple-fill" aria-hidden="true"></i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/></svg></button>
+</nav>`,
+      css: `:root { --uf-ripple-bg: ${p.bg}; --uf-ripple-bar: #1e1d2c; --uf-ripple-edge: #2f2e44; --uf-ripple-icon: #8d8ba8; --uf-ripple-v: ${p.primary}; --uf-ripple-c: ${p.secondary}; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --uf-ripple-bg: #e9e8f3; --uf-ripple-bar: #fff; --uf-ripple-edge: #d9d7ea; --uf-ripple-icon: #7d7b98; }
+}
+.uf-ripple-nav { display: flex; gap: 4px; width: min(420px, 100%); box-sizing: border-box; padding: 6px; border: 1px solid var(--uf-ripple-edge); border-radius: ${p.radius}px; background: var(--uf-ripple-bar); }
+.uf-ripple-tab { position: relative; display: grid; flex: 1; place-items: center; height: 76px; border: 0; border-radius: 22px; background: none; color: var(--uf-ripple-icon); cursor: pointer; transition: color .3s; -webkit-tap-highlight-color: transparent; }
+.uf-ripple-tab[aria-current="true"] { color: #fff; }
+.uf-ripple-tab:focus-visible { outline: 2px solid var(--uf-ripple-c); outline-offset: 2px; }
+.uf-ripple-tab svg { position: relative; z-index: 1; display: block; width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .45s cubic-bezier(.3,1.5,.5,1); }
+.uf-ripple-tab[aria-current="true"] svg { transform: scale(1.08); }
+.uf-ripple-fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(135deg,var(--uf-ripple-v),var(--uf-ripple-c)); opacity: 0; clip-path: circle(0% at 50% 50%); box-shadow: 0 6px 18px -4px color-mix(in srgb,var(--uf-ripple-v) 65%,transparent); }
+.uf-ripple-fill.uf-ripple-on { opacity: 1; clip-path: circle(80% at 50% 50%); transition: clip-path .6s cubic-bezier(.2,.75,.25,1); }
+.uf-ripple-fill.uf-ripple-leave { opacity: 0; clip-path: circle(80% at 50% 50%); transition: opacity .5s ease-out; }
+@media (prefers-reduced-motion: reduce) { .uf-ripple-fill.uf-ripple-on,.uf-ripple-fill.uf-ripple-leave,.uf-ripple-tab svg { transition: none; } }`,
+      js: `(function(){
+  var nav=document.getElementById('uf-ripple-nav'),tabs=[].slice.call(nav.querySelectorAll('.uf-ripple-tab')),cur=0,timers=[];
+  function go(i){
+    if(i===cur)return;
+    var old=tabs[cur].firstElementChild,nw=tabs[i].firstElementChild;
+    tabs[cur].setAttribute('aria-current','false');
+    tabs[cur].setAttribute('tabindex','-1');
+    tabs[i].setAttribute('aria-current','true');
+    tabs[i].setAttribute('tabindex','0');
+    old.classList.remove('uf-ripple-on');
+    old.classList.add('uf-ripple-leave');
+    clearTimeout(timers[cur]);
+    timers[cur]=setTimeout(function(){old.classList.remove('uf-ripple-leave');},520);
+    clearTimeout(timers[i]);
+    nw.classList.remove('uf-ripple-on','uf-ripple-leave');
+    void nw.offsetWidth;
+    nw.classList.add('uf-ripple-on');
+    cur=i;
+  }
+  tabs.forEach(function(t,i){
+    t.setAttribute('tabindex',i===cur?'0':'-1');
+    t.addEventListener('click',function(){go(i);});
+  });
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0,n=cur+d;
+    if(d&&n>=0&&n<tabs.length){tabs[n].focus();go(n);}
+  });
+})();`,
+    }),
+  },
+  {
+    slug: "jelly-icon-nav",
+    name: "Jelly Icon Nav",
+    kind: "component",
+    category: "navigation",
+    description: "An icon navigation bar with a bouncy jelly landing animation and filled selected icons.",
+    controls: ["primary", "bg", "radius", "animation"],
+    defaults: { primary: "#6F9BFF", bg: "#12111A", radius: 30 },
+    added: 22,
+    build: (p) => ({
+      html: `<nav class="uf-jelly-nav" id="uf-jelly-nav" aria-label="Main">
+  <button class="uf-jelly-tab" type="button" aria-label="Home" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="uf-jelly-fill" d="M4 10.5 12 4l8 6.5V20H4z"/><path class="uf-jelly-highlight" d="M7.2 11.6 10.4 9"/><path d="M10 20v-5h4v5"/></svg><i class="uf-jelly-shadow" aria-hidden="true"></i></button>
+  <button class="uf-jelly-tab" type="button" aria-label="Search" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="uf-jelly-fill" cx="10" cy="10" r="6.8"/><path class="uf-jelly-highlight" d="M6.6 9.6a3.5 3.5 0 0 1 3-3"/><path d="m15.2 15.2 5.3 5.3" stroke-width="2.5"/></svg><i class="uf-jelly-shadow" aria-hidden="true"></i></button>
+  <button class="uf-jelly-tab" type="button" aria-label="Favorites" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="uf-jelly-fill" d="M12 20.5S3.5 15.3 3.5 9.2A4.7 4.7 0 0 1 12 6.8a4.7 4.7 0 0 1 8.5 2.4c0 6.1-8.5 11.3-8.5 11.3z"/><path class="uf-jelly-highlight" d="M6.4 9.4a2.3 2.3 0 0 1 2-2.3"/></svg><i class="uf-jelly-shadow" aria-hidden="true"></i></button>
+  <button class="uf-jelly-tab" type="button" aria-label="Profile" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="uf-jelly-fill" cx="12" cy="7.5" r="3.5"/><path class="uf-jelly-highlight" d="M10.3 7.2a1.9 1.9 0 0 1 1.5-1.5"/><path class="uf-jelly-fill" d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/><path class="uf-jelly-highlight" d="M7.3 18c.3-1.4 1.2-2.3 2.5-2.8"/></svg><i class="uf-jelly-shadow" aria-hidden="true"></i></button>
+</nav>`,
+      css: `:root { --uf-jelly-bar: #1e1d2d; --uf-jelly-edge: #312f47; --uf-jelly-icon: #9896b2; --uf-jelly-fill: ${p.primary}; --uf-jelly-on: #e9efff; --uf-jelly-shadow: 0,0,0; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --uf-jelly-bar: #fff; --uf-jelly-edge: #d9d7ea; --uf-jelly-icon: #7d7b98; --uf-jelly-fill: color-mix(in srgb, ${p.primary} 76%, #365ee0); --uf-jelly-on: #1d3cc4; --uf-jelly-shadow: 40,40,90; }
+}
+.uf-jelly-nav { display: flex; justify-content: space-around; width: min(420px, 100%); box-sizing: border-box; padding: 26px 6px 22px; border: 1px solid var(--uf-jelly-edge); border-radius: ${p.radius}px; background: var(--uf-jelly-bar); }
+.uf-jelly-tab { position: relative; padding: 6px 20px 16px; border: 0; background: none; color: var(--uf-jelly-icon); cursor: pointer; transition: color .25s; -webkit-tap-highlight-color: transparent; }
+.uf-jelly-tab[aria-current="true"] { color: var(--uf-jelly-on); }
+.uf-jelly-tab:focus-visible { outline: 2px solid var(--uf-jelly-fill); outline-offset: 2px; border-radius: 14px; }
+.uf-jelly-tab svg { position: relative; z-index: 1; display: block; width: 32px; height: 32px; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transform-origin: 50% 100%; }
+.uf-jelly-fill { fill: var(--uf-jelly-fill); fill-opacity: 0; transition: ${p.animation ? "fill-opacity .25s" : "none"}; }
+.uf-jelly-tab[aria-current="true"] .uf-jelly-fill { fill-opacity: 1; transition: ${p.animation ? "fill-opacity .4s .28s" : "none"}; }
+.uf-jelly-shadow { position: absolute; left: calc(50% - 13px); bottom: 2px; width: 26px; height: 6px; border-radius: 50%; background: rgba(var(--uf-jelly-shadow),.5); filter: blur(2px); }
+.uf-jelly-highlight { stroke: #fff; stroke-opacity: 0; stroke-width: 1.4; transition: ${p.animation ? "stroke-opacity .2s" : "none"}; }
+.uf-jelly-tab[aria-current="true"] .uf-jelly-highlight { stroke-opacity: .75; transition: ${p.animation ? "stroke-opacity .4s .3s" : "none"}; }
+@media (prefers-reduced-motion: reduce) { .uf-jelly-fill,.uf-jelly-tab[aria-current="true"] .uf-jelly-fill,.uf-jelly-highlight,.uf-jelly-tab[aria-current="true"] .uf-jelly-highlight { transition: none; } }`,
+      js: `(function(){
+  var nav=document.getElementById('uf-jelly-nav'),tabs=[].slice.call(nav.querySelectorAll('.uf-jelly-tab')),cur=1;
+  var reduce=${p.animation ? "matchMedia('(prefers-reduced-motion: reduce)').matches" : "true"};
+  tabs.forEach(function(t,i){
+    t.setAttribute('aria-current',i===cur?'true':'false');
+    t.setAttribute('tabindex',i===cur?'0':'-1');
+  });
+  var BODY=[
+    {transform:'translateY(0) scale(1,1)',offset:0,easing:'ease-out'},
+    {transform:'translateY(0) scale(1.32,.66)',offset:.12,easing:'cubic-bezier(.2,.7,.4,1)'},
+    {transform:'translateY(-26px) scale(.8,1.32)',offset:.36,easing:'ease-out'},
+    {transform:'translateY(-31px) scale(.95,1.06)',offset:.5,easing:'ease-in'},
+    {transform:'translateY(0) scale(1.42,.58)',offset:.66,easing:'ease-out'},
+    {transform:'translateY(0) scale(.8,1.28)',offset:.77,easing:'ease-in-out'},
+    {transform:'translateY(0) scale(1.14,.88)',offset:.86,easing:'ease-in-out'},
+    {transform:'translateY(0) scale(.95,1.06)',offset:.94,easing:'ease-in-out'},
+    {transform:'translateY(0) scale(1,1)',offset:1}
+  ];
+  var SHADOW=[
+    {transform:'scale(1)',opacity:1,offset:0},
+    {transform:'scale(1.15,1)',opacity:1,offset:.12},
+    {transform:'scale(.5)',opacity:.4,offset:.36},
+    {transform:'scale(.42)',opacity:.3,offset:.5},
+    {transform:'scale(1.35,1.1)',opacity:1,offset:.66},
+    {transform:'scale(.9)',opacity:1,offset:.77},
+    {transform:'scale(1.08)',opacity:1,offset:.86},
+    {transform:'scale(1)',opacity:1,offset:1}
+  ];
+  function go(i){
+    if(i===cur)return;
+    tabs[cur].setAttribute('aria-current','false');
+    tabs[cur].setAttribute('tabindex','-1');
+    tabs[i].setAttribute('aria-current','true');
+    tabs[i].setAttribute('tabindex','0');
+    cur=i;
+    if(reduce)return;
+    var svg=tabs[i].querySelector('svg'),sh=tabs[i].querySelector('.uf-jelly-shadow');
+    svg.getAnimations().concat(sh.getAnimations()).forEach(function(a){a.cancel();});
+    svg.animate(BODY,{duration:950});
+    sh.animate(SHADOW,{duration:950});
+  }
+  tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i);});});
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0,n=cur+d;
+    if(d&&n>=0&&n<tabs.length){tabs[n].focus();go(n);}
+  });
+})();`,
+    }),
+  },
+  {
+    slug: "badge-pop-nav",
+    name: "Badge Pop Nav",
+    kind: "component",
+    category: "navigation",
+    description: "An icon navigation bar with notification badges that pop into colorful particles.",
+    controls: ["primary", "secondary", "bg", "radius", "animation"],
+    defaults: { primary: "#4D8DFF", secondary: "#8A7CFF", bg: "#12111A", radius: 30 },
+    added: 23,
+    build: (p) => ({
+      html: `<nav class="uf-badge-nav" id="uf-badge-nav" aria-label="Main">
+  <button class="uf-badge-tab" type="button" aria-label="Home"><span class="uf-badge-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg><b class="uf-badge-count" data-n="3">3</b></span></button>
+  <button class="uf-badge-tab" type="button" aria-label="Search"><span class="uf-badge-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15.2 15.2 5.3 5.3"/></svg><b class="uf-badge-count" data-n="1">1</b></span></button>
+  <button class="uf-badge-tab" type="button" aria-label="Favorites"><span class="uf-badge-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.3 3.5 9.2A4.7 4.7 0 0 1 12 6.8a4.7 4.7 0 0 1 8.5 2.4c0 6.1-8.5 11.3-8.5 11.3z"/></svg><b class="uf-badge-count" data-n="5">5</b></span></button>
+  <button class="uf-badge-tab" type="button" aria-label="Profile"><span class="uf-badge-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/></svg><b class="uf-badge-count uf-badge-gone" data-n="2">2</b></span></button>
+</nav>`,
+      css: `:root { --uf-badge-bar: #1d1c2b; --uf-badge-edge: #302f45; --uf-badge-icon: #8d8ba8; --uf-badge-on: #fff; --uf-badge-ind1: ${p.primary}; --uf-badge-ind2: ${p.secondary}; --uf-badge-bg: ${p.bg}; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --uf-badge-bar: #fff; --uf-badge-edge: #d9d7ea; --uf-badge-icon: #7d7b98; --uf-badge-on: #16152a; }
+}
+.uf-badge-nav { display: flex; width: min(420px, 100%); box-sizing: border-box; padding: 24px 6px 26px; border: 1px solid var(--uf-badge-edge); border-radius: ${p.radius}px; background: color-mix(in srgb, var(--uf-badge-bg) 25%, var(--uf-badge-bar)); }
+.uf-badge-tab { position: relative; display: grid; flex: 1; place-items: center; padding: 6px 0 14px; border: 0; background: none; color: var(--uf-badge-icon); cursor: pointer; transition: color .3s; -webkit-tap-highlight-color: transparent; }
+.uf-badge-tab[aria-current="true"] { color: var(--uf-badge-on); }
+.uf-badge-tab:focus-visible { outline: 2px solid var(--uf-badge-ind1); outline-offset: 2px; border-radius: 14px; }
+.uf-badge-tab::after { position: absolute; bottom: -8px; left: calc(50% - 11px); width: 22px; height: 4px; border-radius: 4px; background: linear-gradient(90deg,var(--uf-badge-ind1),var(--uf-badge-ind2)); content: ""; transform: scaleX(0); transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
+.uf-badge-tab[aria-current="true"]::after { transform: scaleX(1); }
+.uf-badge-icon { position: relative; display: block; width: 32px; height: 32px; }
+.uf-badge-icon svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.uf-badge-count { position: absolute; top: -9px; right: -10px; min-width: 20px; height: 20px; box-sizing: border-box; padding: 0 5px; border-radius: 10px; background: linear-gradient(135deg,#ff7ab0,#ff3d7f); color: #fff; font: 700 12px/20px system-ui,sans-serif; text-align: center; box-shadow: 0 0 0 2px var(--uf-badge-bar),0 3px 8px rgba(255,61,127,.45); }
+.uf-badge-count.uf-badge-gone { transform: scale(0); transition: ${p.animation ? "transform .22s ease-out" : "none"}; }
+.uf-badge-bit { position: absolute; z-index: 2; top: -1px; right: -1px; width: 7px; height: 7px; border-radius: 50%; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .uf-badge-tab,.uf-badge-tab::after,.uf-badge-count.uf-badge-gone { transition: none; } }`,
+      js: `(function(){
+  var nav=document.getElementById('uf-badge-nav'),tabs=[].slice.call(nav.querySelectorAll('.uf-badge-tab')),cur=3,timers=[];
+  var reduce=${p.animation ? "matchMedia('(prefers-reduced-motion: reduce)').matches" : "true"};
+  var COLORS=['#ff7ab0','#ff3d7f','#ffb3d1','#ffd36e','#7ad8ff','#c3a6ff'];
+  tabs.forEach(function(t,i){
+    t.setAttribute('aria-current',i===cur?'true':'false');
+    t.setAttribute('tabindex',i===cur?'0':'-1');
+  });
+  function pop(tab){
+    var badge=tab.querySelector('.uf-badge-count');
+    if(!badge||badge.classList.contains('uf-badge-gone'))return;
+    badge.classList.add('uf-badge-gone');
+    if(reduce)return;
+    badge.getAnimations().forEach(function(a){a.cancel();});
+    badge.animate([{transform:'scale(1)'},{transform:'scale(1.35)',offset:.35},{transform:'scale(0)'}],{duration:220,easing:'ease-out'});
+    var icon=tab.querySelector('.uf-badge-icon'),count=9;
+    for(var k=0;k<count;k++){
+      var bit=document.createElement('i');
+      bit.className='uf-badge-bit';
+      bit.style.background=COLORS[k%COLORS.length];
+      icon.appendChild(bit);
+      var angle=(k/count)*Math.PI*2+Math.random()*.5,radius=20+Math.random()*16,size=.6+Math.random()*.7;
+      var burst=bit.animate([
+        {transform:'translate(0,0) scale(.4)',opacity:1},
+        {transform:'translate('+Math.cos(angle)*radius*.7+'px,'+Math.sin(angle)*radius*.7+'px) scale('+size*1.2+')',opacity:1,offset:.35},
+        {transform:'translate('+Math.cos(angle)*radius+'px,'+(Math.sin(angle)*radius+8)+'px) scale(0)',opacity:0}
+      ],{duration:560,delay:60,easing:'cubic-bezier(.2,.7,.4,1)',fill:'both'});
+      burst.onfinish=function(){bit.remove();};
+    }
+  }
+  function unpop(tab){
+    var badge=tab.querySelector('.uf-badge-count');
+    if(!badge||!badge.classList.contains('uf-badge-gone'))return;
+    badge.classList.remove('uf-badge-gone');
+    if(reduce)return;
+    badge.getAnimations().forEach(function(a){a.cancel();});
+    badge.animate([
+      {transform:'scale(0)',offset:0},{transform:'scale(1.4)',offset:.45},{transform:'scale(.85)',offset:.7},
+      {transform:'scale(1.08)',offset:.88},{transform:'scale(1)',offset:1}
+    ],{duration:520,delay:140,easing:'ease-out',fill:'backwards'});
+  }
+  function go(i){
+    if(i===cur)return;
+    tabs[cur].setAttribute('aria-current','false');
+    tabs[i].setAttribute('aria-current','true');
+    unpop(tabs[cur]);
+    pop(tabs[i]);
+    cur=i;
+  }
+  tabs.forEach(function(tab,i){tab.addEventListener('click',function(){go(i);});});
+  nav.addEventListener('keydown',function(e){
+    var direction=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0,next=cur+direction;
+    if(direction&&next>=0&&next<tabs.length){tabs[next].focus();go(next);}
+  });
+})();`,
+    }),
+  },
+  {
+    slug: "walking-toggle",
+    name: "Walking Toggle",
+    kind: "component",
+    category: "toggles",
+    description: "A playful toggle switch with a tiny walking character, dust puffs, and landing animation.",
+    controls: ["primary", "bg", "radius", "animation"],
+    defaults: { primary: "#3FAE6A", bg: "#F3EFE6", radius: 20 },
+    added: 24,
+    build: (p) => ({
+      html: `<main class="uf-walk-card">
+  <label class="uf-walk-row">
+    <span><span class="uf-walk-title">Wi-Fi</span><span class="uf-walk-state" data-state>Off</span></span>
+    <span class="uf-walk-switch" data-color="green">
+      <input class="uf-walk-input" type="checkbox" role="switch" aria-label="Wi-Fi">
+      <span class="uf-walk-ground"></span><span class="uf-walk-track"></span>
+      <span class="uf-walk-character"><span class="uf-walk-legs"><i class="uf-walk-leg uf-walk-leg-a"></i><i class="uf-walk-leg uf-walk-leg-b"></i></span>
+        <span class="uf-walk-head"><span class="uf-walk-eyes"><i class="uf-walk-eye uf-walk-eye-l"></i><i class="uf-walk-eye uf-walk-eye-r"></i></span><span class="uf-walk-mouth"></span></span>
+      </span>
+    </span>
+  </label>
+  <label class="uf-walk-row">
+    <span><span class="uf-walk-title">Notifications</span><span class="uf-walk-state" data-state>Off</span></span>
+    <span class="uf-walk-switch" data-color="pink">
+      <input class="uf-walk-input" type="checkbox" role="switch" aria-label="Notifications">
+      <span class="uf-walk-ground"></span><span class="uf-walk-track"></span>
+      <span class="uf-walk-character"><span class="uf-walk-legs"><i class="uf-walk-leg uf-walk-leg-a"></i><i class="uf-walk-leg uf-walk-leg-b"></i></span>
+        <span class="uf-walk-head"><span class="uf-walk-eyes"><i class="uf-walk-eye uf-walk-eye-l"></i><i class="uf-walk-eye uf-walk-eye-r"></i></span><span class="uf-walk-mouth"></span></span>
+      </span>
+    </span>
+  </label>
+  <label class="uf-walk-row">
+    <span><span class="uf-walk-title">Auto-save</span><span class="uf-walk-state" data-state>On</span></span>
+    <span class="uf-walk-switch" data-color="blue">
+      <input class="uf-walk-input" type="checkbox" role="switch" aria-label="Auto-save" checked>
+      <span class="uf-walk-ground"></span><span class="uf-walk-track"></span>
+      <span class="uf-walk-character"><span class="uf-walk-legs"><i class="uf-walk-leg uf-walk-leg-a"></i><i class="uf-walk-leg uf-walk-leg-b"></i></span>
+        <span class="uf-walk-head"><span class="uf-walk-eyes"><i class="uf-walk-eye uf-walk-eye-l"></i><i class="uf-walk-eye uf-walk-eye-r"></i></span><span class="uf-walk-mouth"></span></span>
+      </span>
+    </span>
+  </label>
+</main>`,
+      css: `:root { --uf-walk-bg: ${p.bg}; --uf-walk-card: #fffdf8; --uf-walk-ink: #2b2a33; --uf-walk-muted: #7b7889; --uf-walk-track-off: #d9d4c7; --uf-walk-ground: #cfc9b8; --uf-walk-face: #fffdf8; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --uf-walk-card: #211f2a; --uf-walk-ink: #f1eee8; --uf-walk-muted: #9a97aa; --uf-walk-track-off: #3a3747; --uf-walk-ground: #3a3747; --uf-walk-face: #211f2a; }
+}
+:root[data-theme="dark"] { --uf-walk-card: #211f2a; --uf-walk-ink: #f1eee8; --uf-walk-muted: #9a97aa; --uf-walk-track-off: #3a3747; --uf-walk-ground: #3a3747; --uf-walk-face: #211f2a; }
+.uf-walk-card { width: min(420px, 100%); padding: 8px 24px; border-radius: ${p.radius}px; background: var(--uf-walk-card); color: var(--uf-walk-ink); box-shadow: 0 1px 0 rgba(0,0,0,.04),0 12px 40px rgba(0,0,0,.08); font-family: "Trebuchet MS","Segoe UI",system-ui,sans-serif; }
+.uf-walk-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; cursor: pointer; }
+.uf-walk-row+.uf-walk-row { border-top: 1px solid var(--uf-walk-track-off); }
+.uf-walk-title,.uf-walk-state { display: block; }
+.uf-walk-title { font-size: 1.05rem; font-weight: 700; }
+.uf-walk-state { margin-top: 2px; color: var(--uf-walk-muted); font-size: .85rem; }
+.uf-walk-switch { --uf-walk-on: ${p.primary}; --uf-walk-w: 88px; --uf-walk-h: 44px; --uf-walk-head-size: 32px; --uf-walk-pad: 6px; --uf-walk-travel: calc(var(--uf-walk-w) - var(--uf-walk-head-size) - var(--uf-walk-pad)*2); --uf-walk-dir: -1; --uf-walk-look: -2px; position: relative; display: block; flex: none; width: var(--uf-walk-w); height: 66px; }
+.uf-walk-switch[data-color="pink"] { --uf-walk-on: #e0568a; }
+.uf-walk-switch[data-color="blue"] { --uf-walk-on: #4a7be0; }
+.uf-walk-switch[data-color="orange"] { --uf-walk-on: #e8892f; }
+.uf-walk-input { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.uf-walk-ground { position: absolute; right: 4px; bottom: 2px; left: 4px; height: 3px; border-radius: 3px; background: var(--uf-walk-ground); }
+.uf-walk-track { position: absolute; top: 0; left: 0; width: var(--uf-walk-w); height: var(--uf-walk-h); overflow: hidden; border-radius: 999px; background: var(--uf-walk-track-off); transition: background-color .45s ease; }
+.uf-walk-track::before { position: absolute; inset: 0; border-radius: inherit; background: var(--uf-walk-on); content: ""; transform: scaleX(0); transform-origin: left; transition: transform .7s cubic-bezier(.5,0,.2,1); }
+.uf-walk-input:checked~.uf-walk-track::before { transform: scaleX(1); }
+.uf-walk-input:focus-visible~.uf-walk-track { outline: 3px solid var(--uf-walk-ink); outline-offset: 4px; }
+.uf-walk-character { position: absolute; z-index: 2; top: var(--uf-walk-pad); left: var(--uf-walk-pad); width: var(--uf-walk-head-size); height: 60px; pointer-events: none; transition: transform .7s cubic-bezier(.5,0,.2,1); }
+.uf-walk-input:checked~.uf-walk-character { --uf-walk-dir: 1; --uf-walk-look: 2px; transform: translateX(var(--uf-walk-travel)); }
+.uf-walk-input:checked~.uf-walk-character .uf-walk-legs { --uf-walk-dir: 1; }
+.uf-walk-legs { position: absolute; inset: 0; transform: scaleX(var(--uf-walk-dir,-1)); }
+.uf-walk-leg { position: absolute; top: 24px; width: 3px; height: 30px; border-radius: 3px; background: var(--uf-walk-ink); transform-origin: 50% 0; transition: transform .2s ease; }
+.uf-walk-leg::after { position: absolute; bottom: 0; left: 0; width: 8px; height: 3px; border-radius: 3px; background: var(--uf-walk-ink); content: ""; }
+.uf-walk-leg-a { left: 9px; }
+.uf-walk-leg-b { left: 20px; }
+.uf-walk-head { position: absolute; top: 0; left: 0; width: var(--uf-walk-head-size); height: var(--uf-walk-head-size); border-radius: 50%; background: var(--uf-walk-face); color: var(--uf-walk-ink); box-shadow: inset 0 0 0 2px var(--uf-walk-ink); transition: transform .15s ease; }
+.uf-walk-input:active~.uf-walk-character .uf-walk-head { transform: scale(1.12,.9); }
+.uf-walk-eyes { position: absolute; top: 11px; left: 0; width: 100%; height: 8px; transform: translateX(var(--uf-walk-look,-2px)); transition: transform .5s ease; }
+.uf-walk-eye { position: absolute; top: 0; width: 6px; height: 8px; border-radius: 50%; background: var(--uf-walk-ink); transform: scaleY(.18); transition: transform .3s ease; }
+.uf-walk-eye-l { left: 7px; }
+.uf-walk-eye-r { left: 19px; }
+.uf-walk-input:checked~.uf-walk-character .uf-walk-eye { transform: scaleY(1); }
+.uf-walk-mouth { position: absolute; top: 21px; left: 50%; width: 10px; height: 2px; margin-left: -5px; border-radius: 2px; background: var(--uf-walk-ink); transform: translateX(var(--uf-walk-look,-2px)); transition: height .3s ease,border-radius .3s ease,transform .5s ease; }
+.uf-walk-input:checked~.uf-walk-character .uf-walk-mouth { height: 6px; border-radius: 0 0 10px 10px; }
+.uf-walk-switch.uf-walk-is-walking .uf-walk-head { animation: uf-walk-hop .35s ease-in-out infinite; }
+.uf-walk-switch.uf-walk-is-walking .uf-walk-leg-a { animation: uf-walk-step .35s ease-in-out infinite alternate; }
+.uf-walk-switch.uf-walk-is-walking .uf-walk-leg-b { animation: uf-walk-step .35s ease-in-out infinite alternate-reverse; }
+.uf-walk-switch.uf-walk-is-landing .uf-walk-head { animation: uf-walk-land .35s ease-out; }
+@keyframes uf-walk-step { from { transform: rotate(-32deg); } to { transform: rotate(32deg); } }
+@keyframes uf-walk-hop { 0%,100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@keyframes uf-walk-land { 0% { transform: scale(1.18,.82); } 55% { transform: scale(.92,1.08); } 100% { transform: scale(1); } }
+.uf-walk-puff { position: absolute; z-index: 1; bottom: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--uf-walk-ground); opacity: 0; pointer-events: none; animation: uf-walk-puff .6s ease-out forwards; }
+@keyframes uf-walk-puff { 0% { opacity: .9; transform: translate(0,0) scale(.4); } 100% { opacity: 0; transform: translate(var(--uf-walk-dx),-14px) scale(1.4); } }
+@media (prefers-reduced-motion: reduce) { .uf-walk-character,.uf-walk-track::before,.uf-walk-eye,.uf-walk-mouth,.uf-walk-eyes { transition-duration: .01s; } .uf-walk-switch.uf-walk-is-walking .uf-walk-head,.uf-walk-switch.uf-walk-is-walking .uf-walk-leg,.uf-walk-switch.uf-walk-is-landing .uf-walk-head,.uf-walk-puff { animation: none; } }
+${p.animation ? "" : ".uf-walk-character,.uf-walk-track,.uf-walk-track::before,.uf-walk-leg,.uf-walk-head,.uf-walk-eyes,.uf-walk-eye,.uf-walk-mouth { transition: none !important; } .uf-walk-switch.uf-walk-is-walking .uf-walk-head,.uf-walk-switch.uf-walk-is-walking .uf-walk-leg,.uf-walk-switch.uf-walk-is-landing .uf-walk-head,.uf-walk-puff { animation: none !important; }"}`,
+      js: `(function(){
+  var reduce=${p.animation ? "window.matchMedia('(prefers-reduced-motion: reduce)').matches" : "true"};
+  document.querySelectorAll('.uf-walk-switch').forEach(function(sw){
+    var input=sw.querySelector('.uf-walk-input');
+    var state=sw.closest('.uf-walk-row').querySelector('[data-state]');
+    var timer;
+    function spawnDust(goingOn){
+      var startX=goingOn?14:66,away=goingOn?-1:1;
+      for(var i=0;i<3;i++){
+        var puff=document.createElement('i');
+        puff.className='uf-walk-puff';
+        puff.style.left=startX+i*5+'px';
+        puff.style.setProperty('--uf-walk-dx',away*(6+i*7)+'px');
+        puff.style.animationDelay=i*70+'ms';
+        sw.appendChild(puff);
+        setTimeout(function(el){el.remove();},900,puff);
+      }
+    }
+    input.addEventListener('change',function(){
+      state.textContent=input.checked?'On':'Off';
+      if(reduce)return;
+      clearTimeout(timer);
+      sw.classList.remove('uf-walk-is-landing');
+      sw.classList.add('uf-walk-is-walking');
+      spawnDust(input.checked);
+      timer=setTimeout(function(){
+        sw.classList.remove('uf-walk-is-walking');
+        sw.classList.add('uf-walk-is-landing');
+        setTimeout(function(){sw.classList.remove('uf-walk-is-landing');},360);
+      },700);
+    });
+  });
+})();`,
+    }),
+  },
+  ...modernButtonItems,
+  frutigerAeroButtonItem,
+  geoOrbitButtonItem,
 ];

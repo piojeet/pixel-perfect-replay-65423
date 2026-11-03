@@ -112,7 +112,7 @@ function Navbar({ onSearch }: { onSearch: () => void }) {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
         <Logo />
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {NAV.map((n) => (
             <Link
               key={n.to}
@@ -139,13 +139,13 @@ function Navbar({ onSearch }: { onSearch: () => void }) {
           <Button asChild variant="hero" size="sm" className="ml-2 hidden sm:inline-flex">
             <Link to="/components">Get Started</Link>
           </Button>
-          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Menu" onClick={() => setMobile(!mobile)}>
+          <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Menu" onClick={() => setMobile(!mobile)}>
             {mobile ? <X /> : <Menu />}
           </Button>
         </div>
       </div>
       {mobile && (
-        <nav className="grid gap-1 border-t border-border px-4 py-3 md:hidden">
+        <nav className="grid gap-1 border-t border-border px-4 py-3 lg:hidden">
           {NAV.map((n) => (
             <Link
               key={n.to}

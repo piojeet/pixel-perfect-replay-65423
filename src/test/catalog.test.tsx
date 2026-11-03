@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { ALL_ITEMS, CATEGORIES, componentItems, backgroundItems, effectItems, findItem, paramsFor } from "@/lib/catalog";
 
 describe("catalog", () => {
-  it("ships 17 components, 12 backgrounds and 12 effects", () => {
-    expect(componentItems).toHaveLength(17);
+  it("ships 20 components, 12 backgrounds and 12 effects", () => {
+    expect(componentItems).toHaveLength(20);
     expect(backgroundItems).toHaveLength(12);
     expect(effectItems).toHaveLength(12);
   });
@@ -35,5 +35,44 @@ describe("catalog", () => {
     expect(built.js).toContain("[drop,toast,content].concat(bits,drips)");
     expect(built.js).toContain("await wait(5000)");
     expect(built.js).toContain("translateY(520px)");
+  });
+
+  it("adds Worm Underline Tabs to the Tabs category", () => {
+    const item = findItem("component", "worm-underline-tabs");
+    expect(item?.category).toBe("tabs");
+    expect(item?.name).toBe("Worm Underline Tabs");
+    if (!item) throw new Error("Worm Underline Tabs is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", secondary: "#ABCDEF" });
+    expect(built.html).toContain('role="tablist"');
+    expect(built.css).toContain("--uf-worm-a: #123456");
+    expect(built.css).toContain("--uf-worm-b: #ABCDEF");
+    expect(built.js).toContain("ArrowRight");
+  });
+
+  it("adds Hopping Dot Nav to Navigation Bars", () => {
+    const item = findItem("component", "hopping-dot-nav");
+    expect(item?.category).toBe("navigation");
+    if (!item) throw new Error("Hopping Dot Nav is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", bg: "#ABCDEF", radius: 18, animation: false });
+    expect(built.html).toContain('aria-label="Favorites"');
+    expect(built.css).toContain("--uf-hop-dot: #123456");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.js).toContain("var reduce=true");
+    expect(built.js).toContain("ArrowRight");
+  });
+
+  it("adds Spotlight Nav to Navigation Bars", () => {
+    const item = findItem("component", "spotlight-nav");
+    expect(item?.category).toBe("navigation");
+    if (!item) throw new Error("Spotlight Nav is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), primary: "#123456", bg: "#ABCDEF", radius: 18, animation: false });
+    expect(built.html).toContain('id="uf-spot-nav"');
+    expect(built.css).toContain("--uf-spot-beam: #123456");
+    expect(built.css).toContain("border-radius: 18px");
+    expect(built.js).toContain("var reduce=true");
+    expect(built.js).toContain("swing.animate");
   });
 });

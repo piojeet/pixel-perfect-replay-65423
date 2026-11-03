@@ -652,4 +652,281 @@ button:disabled { opacity: .5; cursor: default; }`,
 })();`,
     }),
   },
+  {
+    slug: "worm-underline-tabs",
+    name: "Worm Underline Tabs",
+    kind: "component",
+    category: "tabs",
+    description: "Animated tabs with a stretchy gradient underline and sliding content panels.",
+    controls: ["primary", "secondary", "bg", "radius"],
+    defaults: { primary: "#6D5DFC", secondary: "#E45BD0", bg: "#14131C", radius: 24 },
+    added: 18,
+    build: (p) => ({
+  html: `<div class="uf-worm-card">
+  <div class="uf-worm-tabs" role="tablist" aria-label="Media categories" id="uf-worm-tabs">
+    <button class="uf-worm-tab" id="uf-worm-tab-0" role="tab" aria-selected="true" aria-controls="uf-worm-panel-0" tabindex="0">All</button>
+    <button class="uf-worm-tab" id="uf-worm-tab-1" role="tab" aria-selected="false" aria-controls="uf-worm-panel-1" tabindex="-1">Music</button>
+    <button class="uf-worm-tab" id="uf-worm-tab-2" role="tab" aria-selected="false" aria-controls="uf-worm-panel-2" tabindex="-1">Video</button>
+    <button class="uf-worm-tab" id="uf-worm-tab-3" role="tab" aria-selected="false" aria-controls="uf-worm-panel-3" tabindex="-1">Live</button>
+    <span class="uf-worm-indicator" id="uf-worm-indicator" aria-hidden="true"></span>
+  </div>
+  <div class="uf-worm-viewport">
+    <div class="uf-worm-track" id="uf-worm-track">
+  <div class="uf-worm-page uf-worm-p0" id="uf-worm-panel-0" role="tabpanel" aria-labelledby="uf-worm-tab-0"><div class="uf-worm-item"><i></i><i></i></div><div class="uf-worm-item"><i></i><i></i></div></div>
+  <div class="uf-worm-page uf-worm-p1" id="uf-worm-panel-1" role="tabpanel" aria-labelledby="uf-worm-tab-1"><div class="uf-worm-item"><i></i><i></i></div><div class="uf-worm-item"><i></i><i></i></div></div>
+  <div class="uf-worm-page uf-worm-p2" id="uf-worm-panel-2" role="tabpanel" aria-labelledby="uf-worm-tab-2"><div class="uf-worm-item"><i></i><i></i></div><div class="uf-worm-item"><i></i><i></i></div></div>
+  <div class="uf-worm-page uf-worm-p3" id="uf-worm-panel-3" role="tabpanel" aria-labelledby="uf-worm-tab-3"><div class="uf-worm-item"><i></i><i></i></div><div class="uf-worm-item"><i></i><i></i></div></div>
+    </div>
+  </div>
+</div>`,
+  css: `:root { --uf-worm-bg: ${p.bg}; --uf-worm-panel: #1c1b27; --uf-worm-line: #2c2b3b; --uf-worm-text: #f2f1fa; --uf-worm-muted: #8f8da8; --uf-worm-a: ${p.primary}; --uf-worm-b: ${p.secondary}; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --uf-worm-bg: #eceaf6; --uf-worm-panel: #fff; --uf-worm-line: #dedbee; --uf-worm-text: #1b1a2a; --uf-worm-muted: #6c6a85; }
+}
+.uf-worm-card { width: min(420px, 100%); box-sizing: border-box; padding: 20px 16px 18px; border-radius: ${p.radius}px; background: var(--uf-worm-panel); color: var(--uf-worm-text); box-shadow: 0 20px 50px rgba(0,0,0,.25); font-family: "Segoe UI", system-ui, sans-serif; }
+.uf-worm-tabs { position: relative; display: flex; justify-content: space-between; padding: 0 8px; border-bottom: 1px solid var(--uf-worm-line); }
+.uf-worm-tab { padding: 12px 10px 16px; border: 0; background: none; color: var(--uf-worm-muted); font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; transition: color .3s; }
+.uf-worm-tab[aria-selected="true"] { color: var(--uf-worm-text); font-weight: 700; }
+.uf-worm-tab:focus-visible { outline: 2px solid var(--uf-worm-a); outline-offset: 2px; border-radius: 8px; }
+.uf-worm-indicator { position: absolute; bottom: -2px; left: 0; width: 0; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--uf-worm-a), var(--uf-worm-b)); }
+.uf-worm-viewport { overflow: hidden; margin-top: 18px; border-radius: 18px; }
+.uf-worm-track { display: flex; width: 400%; transition: transform .55s cubic-bezier(.65,0,.25,1); }
+.uf-worm-page { display: grid; flex: none; grid-template-columns: 1fr 1fr; gap: 12px; width: 25%; box-sizing: border-box; padding: 0 1px; }
+.uf-worm-item { display: flex; height: 112px; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 16px; border-radius: 16px; box-sizing: border-box; }
+.uf-worm-item i { display: block; height: 7px; border-radius: 7px; background: rgba(255,255,255,.75); }
+.uf-worm-item i:first-child { width: 62%; }
+.uf-worm-item i:last-child { width: 34%; height: 6px; opacity: .7; }
+.uf-worm-p0 .uf-worm-item { background: linear-gradient(135deg,#7c8cff,#4a5bd8); }
+.uf-worm-p1 .uf-worm-item { background: linear-gradient(135deg,#3ab0ff,#8bd2f7); }
+.uf-worm-p2 .uf-worm-item { background: linear-gradient(135deg,#f08ad5,#a66bf0); }
+.uf-worm-p3 .uf-worm-item { background: linear-gradient(135deg,#ff8f6b,#f2557a); }
+.uf-worm-page .uf-worm-item:nth-child(2) { filter: saturate(.5) brightness(.8); }
+@media (prefers-reduced-motion: reduce) { .uf-worm-track { transition: none; } }`,
+  js: `(function(){
+  var tabs=[].slice.call(document.querySelectorAll('#uf-worm-tabs .uf-worm-tab')),
+  worm=document.getElementById('uf-worm-indicator'),
+  track=document.getElementById('uf-worm-track'),
+  DUR=550, cur=0, timer;
+  var mid=function(t){return {l:t.offsetLeft+10,r:t.offsetLeft+t.offsetWidth-10};};
+
+  function place(i){
+    var m=mid(tabs[i]);
+    worm.style.transition='none';
+    worm.style.left=m.l+'px';
+    worm.style.width=(m.r-m.l)+'px';
+  }
+
+  function go(i){
+    if(i===cur)return;
+    var from=mid(tabs[cur]),to=mid(tabs[i]);
+    clearTimeout(timer);
+    var l=Math.min(from.l,to.l),r=Math.max(from.r,to.r);
+    var ease='cubic-bezier(.5,0,.2,1)';
+    worm.style.transition='left '+DUR*.5+'ms '+ease+', width '+DUR*.5+'ms '+ease;
+    worm.style.left=l+'px';
+    worm.style.width=(r-l)+'px';
+    timer=setTimeout(function(){
+  worm.style.left=to.l+'px';
+  worm.style.width=(to.r-to.l)+'px';
+    },DUR*.5);
+    tabs[cur].setAttribute('aria-selected','false');
+    tabs[cur].setAttribute('tabindex','-1');
+    tabs[i].setAttribute('aria-selected','true');
+    tabs[i].setAttribute('tabindex','0');
+    track.style.transform='translateX(-'+(i*25)+'%)';
+    cur=i;
+  }
+
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){go(i);});
+    t.addEventListener('keydown',function(e){
+  var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:-1;
+  if(n>=0&&n<tabs.length){tabs[n].focus();go(n);}
+    });
+  });
+  window.addEventListener('resize',function(){place(cur);});
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){place(cur);});}
+  place(cur);
+})();`,
+    }),
+  },
+  {
+    slug: "hopping-dot-nav",
+    name: "Hopping Dot Nav",
+    kind: "component",
+    category: "navigation",
+    description: "An icon navigation bar with a playful hopping indicator and reduced-motion support.",
+    controls: ["primary", "bg", "radius", "animation"],
+    defaults: { primary: "#4D7BFF", bg: "#121118", radius: 26 },
+    added: 19,
+    build: (p) => ({
+      html: `<nav class="uf-hop-nav" id="uf-hop-nav" aria-label="Main">
+  <button type="button" aria-label="Home" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></button>
+  <button type="button" aria-label="Search" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+  <button type="button" aria-label="Favorites" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.3 3.5 9.2A4.7 4.7 0 0 1 12 6.8a4.7 4.7 0 0 1 8.5 2.4c0 6.1-8.5 11.3-8.5 11.3z"/></svg></button>
+  <button type="button" aria-label="Profile" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/></svg></button>
+  <div class="uf-hop-rail" id="uf-hop-rail" aria-hidden="true"><div class="uf-hop-dot" id="uf-hop-dot"></div></div>
+</nav>`,
+      css: `.uf-hop-nav {
+  --uf-hop-bar: #232233; --uf-hop-edge: #34334a; --uf-hop-icon: #8d8ba6; --uf-hop-on: #f1f0fb; --uf-hop-dot: ${p.primary};
+  position: relative; display: flex; justify-content: space-around; width: min(420px, 100%); box-sizing: border-box;
+  padding: 20px 8px 34px; border: 1px solid var(--uf-hop-edge); border-radius: ${p.radius}px; background: var(--uf-hop-bar);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .uf-hop-nav { --uf-hop-bar: #fff; --uf-hop-edge: #d9d7ea; --uf-hop-icon: #7d7b98; --uf-hop-on: #1c1b2c; --uf-hop-dot: color-mix(in srgb, ${p.primary} 78%, #173bb8); }
+}
+.uf-hop-nav button {
+  padding: 8px 18px; border: 0; background: none; color: var(--uf-hop-icon); cursor: pointer; transition: color .25s, transform .25s;
+}
+.uf-hop-nav button[aria-current="true"] { color: var(--uf-hop-on); }
+.uf-hop-nav button:active { transform: scale(.92); }
+.uf-hop-nav button:focus-visible { outline: 2px solid var(--uf-hop-dot); outline-offset: 2px; border-radius: 12px; }
+.uf-hop-nav svg { display: block; width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.uf-hop-rail { position: absolute; bottom: 12px; left: 0; width: 0; height: 0; }
+.uf-hop-dot {
+  position: absolute; top: -25px; left: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--uf-hop-dot);
+  box-shadow: 0 0 10px 3px color-mix(in srgb, var(--uf-hop-dot) 70%, transparent), 0 0 22px 6px color-mix(in srgb, var(--uf-hop-dot) 35%, transparent);
+  transform-origin: 50% 100%;
+}`,
+      js: `(function(){
+  var nav=document.getElementById('uf-hop-nav'), rail=document.getElementById('uf-hop-rail'), dot=document.getElementById('uf-hop-dot'),
+      btns=[].slice.call(nav.querySelectorAll('button')), cur=btns.length-1, anim=[];
+  var reduce=${p.animation ? "matchMedia('(prefers-reduced-motion: reduce)').matches" : "true"};
+  var cx=function(i){return btns[i].offsetLeft+btns[i].offsetWidth/2;};
+
+  function snap(i){
+    anim.forEach(function(a){a.cancel();});
+    anim=[];
+    rail.style.transform='translateX('+cx(i)+'px)';
+  }
+
+  function hop(i){
+    if(i===cur)return;
+    btns[cur].setAttribute('aria-current','false');
+    btns[i].setAttribute('aria-current','true');
+    var from=cx(cur),to=cx(i),dist=Math.abs(to-from);
+    cur=i;
+    if(reduce){snap(i);return;}
+    anim.forEach(function(a){a.cancel();});
+    anim=[];
+    var T=300+dist*0.9,h=Math.min(46+dist*0.18,90),S=650,D=T+S,k=T/D,dir=to>from?1:-1,o={duration:D,fill:'forwards'},w=function(n){return k+(1-k)*n;};
+    anim.push(rail.animate([{transform:'translateX('+from+'px)'},{transform:'translateX('+to+'px)'}],{duration:T,fill:'forwards',easing:'cubic-bezier(.45,.1,.55,.9)'}));
+    anim.push(dot.animate([
+      {transform:'translateY(0) scale(1,1)',offset:0,easing:'cubic-bezier(.2,.7,.4,1)'},
+      {transform:'translateY('+(-h*.5)+'px) skewX('+(-dir*10)+'deg) scale(.8,1.4)',offset:k*.18,easing:'cubic-bezier(.2,.7,.4,1)'},
+      {transform:'translateY('+(-h)+'px) scale(1.05,.95)',offset:k*.5,easing:'cubic-bezier(.6,0,.9,.4)'},
+      {transform:'translateY(-3px) skewX('+(dir*8)+'deg) scale(.82,1.4)',offset:k*.86,easing:'ease-in'},
+      {transform:'translateY(0) scale(2,.3)',offset:k,easing:'ease-out'},
+      {transform:'translateY(0) scale(.75,1.4)',offset:w(.18),easing:'ease-in-out'},
+      {transform:'translateY(0) scale(1.3,.72)',offset:w(.38),easing:'ease-in-out'},
+      {transform:'translateY(0) scale(.9,1.15)',offset:w(.58),easing:'ease-in-out'},
+      {transform:'translateY(0) scale(1.07,.93)',offset:w(.78),easing:'ease-in-out'},
+      {transform:'translateY(0) scale(1,1)',offset:1}
+    ],o));
+  }
+
+  btns.forEach(function(b,i){b.addEventListener('click',function(){hop(i);});});
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0,n=cur+d;
+    if(d&&n>=0&&n<btns.length){btns[n].focus();hop(n);}
+  });
+  addEventListener('resize',function(){snap(cur);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){snap(cur);});
+  snap(cur);
+})();`,
+    }),
+  },
+  {
+    slug: "spotlight-nav",
+    name: "Spotlight Nav",
+    kind: "component",
+    category: "navigation",
+    description: "An icon navigation bar with a glowing spotlight that swings to each selected item.",
+    controls: ["primary", "bg", "radius", "animation"],
+    defaults: { primary: "#FFEEC0", bg: "#0E0D14", radius: 26 },
+    added: 20,
+    build: (p) => ({
+      html: `<nav class="uf-spot-nav" id="uf-spot-nav" aria-label="Main">
+  <button type="button" aria-label="Home" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg></button>
+  <button type="button" aria-label="Search" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+  <button type="button" aria-label="Favorites" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5S3.5 15.3 3.5 9.2A4.7 4.7 0 0 1 12 6.8a4.7 4.7 0 0 1 8.5 2.4c0 6.1-8.5 11.3-8.5 11.3z"/></svg></button>
+  <button type="button" aria-label="Profile" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/></svg></button>
+  <div class="uf-spot-rail" id="uf-spot-rail" aria-hidden="true">
+    <div class="uf-spot-lamp"></div>
+    <div class="uf-spot-swing" id="uf-spot-swing"><div class="uf-spot-beam"></div></div>
+  </div>
+</nav>`,
+      css: `.uf-spot-nav {
+  --uf-spot-bar: #1b1a27; --uf-spot-edge: #2e2d42; --uf-spot-icon: #6f6d89; --uf-spot-on: #fff6dc; --uf-spot-beam: ${p.primary};
+  position: relative; z-index: 0; overflow: hidden; display: flex; justify-content: space-around; width: min(420px, 100%); box-sizing: border-box;
+  padding: 32px 8px 18px; border: 1px solid var(--uf-spot-edge); border-radius: ${p.radius}px; background: var(--uf-spot-bar);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .uf-spot-nav { --uf-spot-bar: color-mix(in srgb, ${p.bg} 35%, #fff); --uf-spot-edge: color-mix(in srgb, ${p.bg} 25%, #fff); --uf-spot-icon: #8d8bad; }
+}
+.uf-spot-nav button { position: relative; z-index: 2; padding: 8px 18px; border: 0; background: none; color: var(--uf-spot-icon); cursor: pointer; transition: color .35s, filter .35s, transform .35s; }
+.uf-spot-nav button.uf-spot-lit { color: #fff; filter: drop-shadow(0 0 6px color-mix(in srgb, ${p.primary} 85%, #96cdff)); transform: scale(1.06); }
+.uf-spot-nav button:focus-visible { outline: 2px solid ${p.primary}; outline-offset: 2px; border-radius: 12px; }
+.uf-spot-nav svg { display: block; width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.uf-spot-rail { position: absolute; z-index: 1; top: 0; left: 0; width: 0; height: 0; pointer-events: none; }
+.uf-spot-lamp { position: absolute; top: 0; left: -19px; width: 38px; height: 6px; border-radius: 6px; background: color-mix(in srgb, ${p.primary} 35%, #e9f6ff); box-shadow: 0 0 16px 4px color-mix(in srgb, ${p.primary} 75%, transparent); }
+.uf-spot-swing { position: absolute; top: 4px; left: 0; width: 0; height: 0; transform-origin: 0 0; filter: blur(5px); }
+.uf-spot-beam { position: absolute; top: 0; left: -64px; width: 128px; height: 108px; clip-path: polygon(34% 0,66% 0,100% 100%,0 100%); background: linear-gradient(to bottom, color-mix(in srgb, ${p.primary} 55%, transparent), color-mix(in srgb, ${p.primary} 30%, transparent) 60%, color-mix(in srgb, ${p.primary} 14%, transparent)); -webkit-mask-image: linear-gradient(to bottom,#000 35%,transparent 100%); mask-image: linear-gradient(to bottom,#000 35%,transparent 100%); }
+@media (prefers-reduced-motion: reduce) { .uf-spot-nav button { transition: none; } }`,
+      js: `(function(){
+  var nav=document.getElementById('uf-spot-nav'),rail=document.getElementById('uf-spot-rail'),swing=document.getElementById('uf-spot-swing'),
+      btns=[].slice.call(nav.querySelectorAll('button')),cur=0,anim=[],timer;
+  var reduce=${p.animation ? "matchMedia('(prefers-reduced-motion: reduce)').matches" : "true"};
+  var cx=function(i){return btns[i].offsetLeft+btns[i].offsetWidth/2;};
+  function light(i){btns.forEach(function(b,j){b.classList.toggle('uf-spot-lit',j===i);});}
+  function snap(i){
+    anim.forEach(function(a){a.cancel();});
+    anim=[];
+    clearTimeout(timer);
+    rail.style.transform='translateX('+cx(i)+'px)';
+    swing.style.transform='none';
+    light(i);
+  }
+
+  function go(i){
+    if(i===cur)return;
+    var from=cx(cur),to=cx(i),dist=Math.abs(to-from),dir=to>from?1:-1;
+    cur=i;
+    clearTimeout(timer);
+    if(reduce){snap(i);return;}
+    anim.forEach(function(a){a.cancel();});
+    anim=[];
+    light(-1);
+    var T=380+dist*.8,S=900,D=T+S,k=T/D,a=Math.min(16+dist*.08,30),w=function(n){return k+(1-k)*n;};
+    anim.push(rail.animate([{transform:'translateX('+from+'px)'},{transform:'translateX('+to+'px)'}],{duration:T,fill:'forwards',easing:'cubic-bezier(.55,0,.25,1)'}));
+    anim.push(swing.animate([
+      {transform:'rotate(0deg)',offset:0,easing:'ease-out'},
+      {transform:'rotate('+(-dir*a)+'deg)',offset:k*.55,easing:'ease-in-out'},
+      {transform:'rotate('+(-dir*a*.6)+'deg)',offset:k,easing:'ease-in-out'},
+      {transform:'rotate('+(dir*a*.55)+'deg)',offset:w(.22),easing:'ease-in-out'},
+      {transform:'rotate('+(-dir*a*.3)+'deg)',offset:w(.45),easing:'ease-in-out'},
+      {transform:'rotate('+(dir*a*.14)+'deg)',offset:w(.68),easing:'ease-in-out'},
+      {transform:'rotate('+(-dir*a*.05)+'deg)',offset:w(.85),easing:'ease-in-out'},
+      {transform:'rotate(0deg)',offset:1}
+    ],{duration:D,fill:'forwards'}));
+    timer=setTimeout(function(){light(i);},T*.8);
+  }
+
+  btns.forEach(function(b,i){
+    b.addEventListener('click',function(){
+      btns[cur].setAttribute('aria-current','false');
+      btns[i].setAttribute('aria-current','true');
+      go(i);
+    });
+  });
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0,n=cur+d;
+    if(d&&n>=0&&n<btns.length){btns[n].focus();btns[cur].setAttribute('aria-current','false');btns[n].setAttribute('aria-current','true');go(n);}
+  });
+  addEventListener('resize',function(){snap(cur);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){snap(cur);});
+  snap(cur);
+})();`,
+    }),
+  },
 ];

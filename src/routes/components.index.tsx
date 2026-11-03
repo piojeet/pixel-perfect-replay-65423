@@ -27,14 +27,14 @@ function ComponentsPage() {
   }, [q, cat, sort]);
 
   const btn = (active: boolean) =>
-    "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors " +
+    "flex w-auto shrink-0 items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors lg:w-full " +
     (active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-surface hover:text-foreground");
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <PageHeader eyebrow={`${componentItems.length} components`} title="Explore Components" description="Discover beautifully crafted components ready for your next project." />
-      <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
-        <aside className="lg:sticky lg:top-24 lg:h-fit">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="min-w-0 lg:sticky lg:top-24 lg:h-fit">
           <p className="mb-2 px-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">Categories</p>
           <div className="flex gap-1 overflow-x-auto pb-2 lg:grid lg:overflow-visible">
             <button className={btn(cat === "all")} onClick={() => setCat("all")}>
@@ -47,11 +47,11 @@ function ComponentsPage() {
             ))}
           </div>
         </aside>
-        <div>
+        <div className="min-w-0">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-            <div className="flex-1"><SearchField value={q} onChange={setQ} placeholder="Search components..." /></div>
+            <div className="w-full min-w-0 flex-1"><SearchField value={q} onChange={setQ} placeholder="Search components..." /></div>
             <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort"
-              className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground outline-none focus:border-primary">
+              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground outline-none focus:border-primary sm:w-auto">
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
               <option value="az">Name A–Z</option>

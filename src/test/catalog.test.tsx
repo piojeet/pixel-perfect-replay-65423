@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { ALL_ITEMS, CATEGORIES, componentItems, backgroundItems, effectItems, findItem, paramsFor } from "@/lib/catalog";
 
 describe("catalog", () => {
-  it("ships 78 components, 12 backgrounds and 12 effects", () => {
-    expect(componentItems).toHaveLength(78);
+  it("ships 81 components, 12 backgrounds and 12 effects", () => {
+    expect(componentItems).toHaveLength(81);
     expect(backgroundItems).toHaveLength(12);
     expect(effectItems).toHaveLength(12);
   });
@@ -178,5 +178,54 @@ describe("catalog", () => {
     expect(built.css).toContain("font:700 28px/1 \"Geo\",monospace");
     expect(built.css).not.toContain("animation:uf-geo");
     expect(built.js).toBeUndefined();
+  });
+
+  it("adds Hamburger Morph Button to Menu with a scoped accessible toggle", () => {
+    const item = findItem("component", "hamburger-morph-button");
+    expect(item?.category).toBe("menu");
+    expect(CATEGORIES.component.some((category) => category.slug === "menu" && category.label === "Menu")).toBe(true);
+    if (!item) throw new Error("Hamburger Morph Button is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), animation: false });
+    expect(built.html).toContain('aria-expanded="false" aria-label="Menu"');
+    expect(built.html).not.toContain("<body");
+    expect(built.css).toContain(".uf-hamburger-morph-button[aria-expanded=\"true\"]");
+    expect(built.css).not.toContain("transition:box-shadow");
+    expect(built.js).toContain("aria-expanded");
+    expect(built.js).toContain("addEventListener('click'");
+  });
+
+  it("adds Flip Knob Toggle to Toggles without page-level markup", () => {
+    const item = findItem("component", "flip-knob-toggle");
+    expect(item?.category).toBe("toggles");
+    if (!item) throw new Error("Flip Knob Toggle is missing from the catalog");
+
+    const built = item.build({ ...paramsFor(item), animation: false });
+    expect(built.html).toContain('role="switch" aria-checked="false" aria-label="Toggle"');
+    expect(built.html).not.toContain("<body");
+    expect(built.css).toContain("rotateY(180deg)");
+    expect(built.css).toContain(".uf-flip-knob[aria-checked=\"true\"]");
+    expect(built.css).not.toContain("@keyframes uf-flip-knob-lift");
+    expect(built.js).toContain("aria-checked");
+    expect(built.js).not.toContain("animationend");
+  });
+
+  it("adds Neon Glow Toggle to Toggles with an accessible SVG switch", () => {
+    const item = findItem("component", "neon-glow-toggle");
+    expect(item?.category).toBe("toggles");
+    if (!item) throw new Error("Neon Glow Toggle is missing from the catalog");
+
+    const animated = item.build({ ...paramsFor(item), animation: true });
+    expect(animated.html).toContain('role="switch" aria-checked="false" aria-label="Toggle"');
+    expect(animated.html).toContain("uf-neon-glow-gradient");
+    expect(animated.html).not.toContain("<body");
+    expect(animated.css).toContain("stroke:url(#uf-neon-glow-gradient)");
+    expect(animated.css).toContain("@keyframes uf-neon-glow-race");
+    expect(animated.js).toContain("aria-checked");
+    expect(animated.js).toContain("uf-neon-glow-running");
+
+    const staticBuild = item.build({ ...paramsFor(item), animation: false });
+    expect(staticBuild.css).not.toContain("@keyframes uf-neon-glow-race");
+    expect(staticBuild.js).not.toContain("toggle.offsetWidth");
   });
 });

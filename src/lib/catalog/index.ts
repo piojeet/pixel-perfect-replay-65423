@@ -8,6 +8,7 @@ export * from "./types";
 export const CATEGORIES: Record<Kind, { slug: string; label: string; description: string }[]> = {
   component: [
     { slug: "buttons", label: "Buttons", description: "Clickable actions with style" },
+    { slug: "menu", label: "Menu", description: "Menu buttons and controls" },
     { slug: "dropdowns", label: "Dropdowns", description: "Select menus and pickers" },
     { slug: "cards", label: "Cards", description: "Content containers" },
     { slug: "inputs", label: "Inputs", description: "Text fields and search" },

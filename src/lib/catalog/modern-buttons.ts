@@ -328,3 +328,254 @@ ${p.animation ? `@keyframes uf-geo-spin { to { transform:translate(-50%,-50%) ro
 @media (prefers-reduced-motion:reduce) { .uf-geo-orbit-button,.uf-geo-orbit-button::before { animation:none; } }`,
   }),
 };
+
+export const hamburgerMorphButtonItem: Item = {
+  slug: "hamburger-morph-button",
+  name: "Hamburger Morph Button",
+  kind: "component",
+  category: "menu",
+  description: "A circular menu button that morphs into a close icon with a glowing gradient edge.",
+  controls: ["animation"],
+  defaults: { radius: 999 },
+  added: 79,
+  build: (p) => ({
+    html: `<button type="button" class="uf-hamburger-morph-button" aria-expanded="false" aria-label="Menu"><span class="uf-hamburger-morph-icon" aria-hidden="true"><i class="uf-hamburger-morph-bar uf-hamburger-morph-top"></i><i class="uf-hamburger-morph-bar uf-hamburger-morph-middle"></i><i class="uf-hamburger-morph-bar uf-hamburger-morph-bottom"></i></span></button>`,
+    css: `.uf-hamburger-morph-button {
+  --uf-hm-violet:#7c6cff;
+  --uf-hm-cyan:#38c8ff;
+  --uf-hm-bar:#fff;
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:128px;
+  height:128px;
+  padding:0;
+  border:1px solid #3b3a54;
+  border-radius:50%;
+  background:#222136;
+  cursor:pointer;
+  isolation:isolate;
+  -webkit-tap-highlight-color:transparent;
+  ${p.animation ? "transition:box-shadow .5s .2s,transform .2s,border-color .4s;" : ""}
+}
+.uf-hamburger-morph-button:active { ${p.animation ? "transform:scale(.94);" : ""} }
+.uf-hamburger-morph-button:focus-visible { outline:2px solid var(--uf-hm-cyan); outline-offset:5px; }
+.uf-hamburger-morph-button::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-1px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--uf-hm-violet),var(--uf-hm-cyan));
+  opacity:0;
+  transform:scale(.2);
+  ${p.animation ? "transition:opacity .35s,transform .5s cubic-bezier(.2,.8,.2,1);" : ""}
+}
+.uf-hamburger-morph-icon {
+  position:relative;
+  width:50px;
+  height:36px;
+  ${p.animation ? "transition:rotate .35s cubic-bezier(.5,0,.2,1);" : ""}
+}
+.uf-hamburger-morph-bar {
+  position:absolute;
+  left:0;
+  top:calc(50% - 3px);
+  width:100%;
+  height:6px;
+  border-radius:6px;
+  background:var(--uf-hm-bar);
+  translate:0 0;
+  rotate:0deg;
+  scale:1 1;
+  opacity:1;
+  ${p.animation ? "transition:translate .28s cubic-bezier(.5,0,.2,1) .3s,rotate .3s cubic-bezier(.5,0,.2,1),scale .25s .3s,opacity .2s .3s;" : ""}
+}
+.uf-hamburger-morph-top { translate:0 -15px; }
+.uf-hamburger-morph-bottom { translate:0 15px; }
+.uf-hamburger-morph-button[aria-expanded="true"] { border-color:transparent; box-shadow:0 0 0 0 #0000,0 0 50px 8px #5c8cff77; }
+.uf-hamburger-morph-button[aria-expanded="true"]::before { opacity:1; transform:scale(1); }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-icon { rotate:90deg; }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-bar { ${p.animation ? "transition:translate .28s cubic-bezier(.5,0,.2,1),rotate .35s cubic-bezier(.5,0,.2,1) .25s,scale .25s,opacity .2s;" : ""} }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-top { translate:0 0; rotate:45deg; }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-bottom { translate:0 0; rotate:-45deg; }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-middle { opacity:0; scale:0 1; }
+.uf-hamburger-morph-button[aria-expanded="true"] .uf-hamburger-morph-bar { background:#fff; }
+@media (prefers-reduced-motion:reduce) { .uf-hamburger-morph-button,.uf-hamburger-morph-button::before,.uf-hamburger-morph-icon,.uf-hamburger-morph-bar { transition:none!important; } }`,
+    js: `(function(){
+  var button=document.querySelector('.uf-hamburger-morph-button');
+  button.addEventListener('click',function(){
+    button.setAttribute('aria-expanded',button.getAttribute('aria-expanded')!=='true');
+  });
+})();`,
+  }),
+};
+
+export const flipKnobToggleItem: Item = {
+  slug: "flip-knob-toggle",
+  name: "Flip Knob Toggle",
+  kind: "component",
+  category: "toggles",
+  description: "A 3D coin knob flips between off and on with a glowing switch track.",
+  controls: ["animation"],
+  defaults: { radius: 50 },
+  added: 80,
+  build: (p) => ({
+    html: `<button type="button" class="uf-flip-knob" role="switch" aria-checked="false" aria-label="Toggle"><span class="uf-flip-knob-thumb"><span class="uf-flip-knob-coin"><span class="uf-flip-knob-face uf-flip-knob-off"><i></i></span><span class="uf-flip-knob-face uf-flip-knob-on"><i></i></span></span></span></button>`,
+    css: `.uf-flip-knob {
+  position:relative;
+  display:block;
+  width:200px;
+  height:100px;
+  padding:0;
+  border:1px solid #3d3c58;
+  border-radius:50px;
+  background:#292840;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  ${p.animation ? "transition:background .5s,border-color .5s,box-shadow .5s;" : ""}
+}
+.uf-flip-knob:focus-visible { outline:2px solid #38c8ff; outline-offset:5px; }
+.uf-flip-knob-thumb {
+  position:absolute;
+  top:8px;
+  left:8px;
+  width:82px;
+  height:82px;
+  perspective:500px;
+  translate:0 0;
+  ${p.animation ? "transition:translate .6s cubic-bezier(.5,-.2,.2,1.2);" : ""}
+}
+.uf-flip-knob-coin {
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transform:rotateY(0);
+  ${p.animation ? "transition:transform .6s cubic-bezier(.5,-.2,.2,1.2);" : ""}
+}
+.uf-flip-knob-face {
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.uf-flip-knob-off {
+  background:radial-gradient(circle at 35% 30%,#fbfaff,#d3d1e8 70%,#bab8d4);
+  box-shadow:inset 0 -4px 8px #8a88ab55,0 6px 14px #0005;
+}
+.uf-flip-knob-off i {
+  width:32px;
+  height:32px;
+  border:9px solid #9a98b8;
+  border-radius:50%;
+}
+.uf-flip-knob-on {
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg,#7c6cff,#38c8ff);
+  box-shadow:0 0 26px 4px #4d8dff99,inset 0 1px #fff5;
+}
+.uf-flip-knob-on i {
+  width:9px;
+  height:38px;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 0 12px 2px #fff9;
+}
+.uf-flip-knob[aria-checked="true"] {
+  background:#2d2870;
+  border-color:#6a63d8;
+  box-shadow:0 0 34px 2px #5c6cff55,inset 0 0 20px #0004;
+}
+.uf-flip-knob[aria-checked="true"] .uf-flip-knob-thumb { translate:100px 0; }
+.uf-flip-knob[aria-checked="true"] .uf-flip-knob-coin { transform:rotateY(180deg); }
+.uf-flip-knob-thumb.uf-flip-knob-animating { ${p.animation ? "animation:uf-flip-knob-lift .6s ease-in-out;" : ""} }
+${p.animation ? "@keyframes uf-flip-knob-lift { 50% { scale:1.14; } }" : ""}
+@media (prefers-reduced-motion:reduce) { .uf-flip-knob,.uf-flip-knob-thumb,.uf-flip-knob-coin { transition:none!important; animation:none!important; } }`,
+    js: `(function(){
+  var toggle=document.querySelector('.uf-flip-knob');
+  toggle.addEventListener('click',function(){
+    toggle.setAttribute('aria-checked',toggle.getAttribute('aria-checked')!=='true');
+    ${p.animation ? "var thumb=toggle.querySelector('.uf-flip-knob-thumb');thumb.classList.remove('uf-flip-knob-animating');void thumb.offsetWidth;thumb.classList.add('uf-flip-knob-animating');thumb.addEventListener('animationend',function(){thumb.classList.remove('uf-flip-knob-animating');},{once:true});" : ""}
+  });
+})();`,
+  }),
+};
+
+export const neonGlowToggleItem: Item = {
+  slug: "neon-glow-toggle",
+  name: "Neon Glow Toggle",
+  kind: "component",
+  category: "toggles",
+  description: "A neon-outlined switch with a glowing knob and animated light trail.",
+  controls: ["animation"],
+  defaults: { radius: 50 },
+  added: 81,
+  build: (p) => ({
+    html: `<button type="button" class="uf-neon-glow-toggle" role="switch" aria-checked="false" aria-label="Toggle"><svg viewBox="0 0 200 100" aria-hidden="true"><defs><linearGradient id="uf-neon-glow-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="0"><stop offset="0" stop-color="#7c6cff"></stop><stop offset="1" stop-color="#38c8ff"></stop></linearGradient></defs><rect class="uf-neon-glow-base" x="2" y="2" width="196" height="96" rx="48"></rect><rect class="uf-neon-glow-neon" x="2" y="2" width="196" height="96" rx="48"></rect><rect class="uf-neon-glow-tail" x="2" y="2" width="196" height="96" rx="48" pathLength="100"></rect><rect class="uf-neon-glow-spark" x="2" y="2" width="196" height="96" rx="48" pathLength="100"></rect></svg><span class="uf-neon-glow-knob"></span></button>`,
+    css: `.uf-neon-glow-toggle {
+  position:relative;
+  display:block;
+  width:200px;
+  height:100px;
+  padding:0;
+  border:0;
+  border-radius:50px;
+  background:#0e0d15;
+  box-shadow:0 0 0 0 #38c8ff00,inset 0 2px 10px #0008;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  ${p.animation ? "transition:background .5s .5s,box-shadow .6s .5s;" : ""}
+}
+.uf-neon-glow-toggle:focus-visible { outline:2px solid #38c8ff; outline-offset:6px; }
+.uf-neon-glow-toggle svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.uf-neon-glow-toggle rect { fill:none; stroke-width:4; }
+.uf-neon-glow-base { stroke:#34325a; }
+.uf-neon-glow-neon {
+  stroke:url(#uf-neon-glow-gradient);
+  opacity:0;
+  filter:drop-shadow(0 0 6px #5c8cff) drop-shadow(0 0 14px #38a8ff);
+  ${p.animation ? "transition:opacity .5s .5s;" : ""}
+}
+.uf-neon-glow-spark,.uf-neon-glow-tail { stroke-linecap:round; stroke-dashoffset:0; opacity:0; }
+.uf-neon-glow-spark { stroke:#fff; stroke-dasharray:4 96; filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #38c8ff); }
+.uf-neon-glow-tail { stroke:#38c8ff; stroke-dasharray:20 80; filter:blur(2px); }
+${p.animation ? `.uf-neon-glow-toggle.uf-neon-glow-running .uf-neon-glow-spark,.uf-neon-glow-toggle.uf-neon-glow-running .uf-neon-glow-tail { animation:uf-neon-glow-race .8s cubic-bezier(.5,0,.4,1); }
+@keyframes uf-neon-glow-race { 0% { opacity:1; stroke-dashoffset:0; } 92% { opacity:1; } 100% { opacity:0; stroke-dashoffset:-100; } }` : ""}
+.uf-neon-glow-knob {
+  position:absolute;
+  top:12px;
+  left:12px;
+  width:76px;
+  height:76px;
+  box-sizing:border-box;
+  border:3px solid #5b5a7c;
+  border-radius:50%;
+  background:#16151f;
+  translate:0 0;
+  ${p.animation ? "transition:translate .55s cubic-bezier(.5,-.15,.2,1.15),background .4s .45s,border-color .4s .45s,box-shadow .5s .45s;" : ""}
+}
+.uf-neon-glow-toggle[aria-checked="true"] { background:#10294a; box-shadow:0 0 44px 6px #38a8ff55,inset 0 2px 14px #0006; }
+.uf-neon-glow-toggle[aria-checked="true"] .uf-neon-glow-neon { opacity:1; }
+.uf-neon-glow-toggle[aria-checked="true"] .uf-neon-glow-knob {
+  translate:100px 0;
+  border-color:transparent;
+  background:radial-gradient(circle,#fff 0,#9fe8ff 38%,#38c8ff 72%,#3f9bff);
+  box-shadow:0 0 28px 8px #38c8ffaa,0 0 60px 14px #38a8ff55;
+}
+.uf-neon-glow-toggle:not([aria-checked="true"]),.uf-neon-glow-toggle:not([aria-checked="true"]) .uf-neon-glow-neon,.uf-neon-glow-toggle:not([aria-checked="true"]) .uf-neon-glow-knob { transition-delay:0s; }
+@media (prefers-reduced-motion:reduce) { .uf-neon-glow-toggle,.uf-neon-glow-neon,.uf-neon-glow-knob { transition:none!important; } .uf-neon-glow-toggle.uf-neon-glow-running .uf-neon-glow-spark,.uf-neon-glow-toggle.uf-neon-glow-running .uf-neon-glow-tail { animation:none; } }`,
+    js: `(function(){
+  var toggle=document.querySelector('.uf-neon-glow-toggle'),timer;
+  toggle.addEventListener('click',function(){
+    var on=toggle.getAttribute('aria-checked')!=='true';
+    toggle.setAttribute('aria-checked',on);
+    clearTimeout(timer);
+    toggle.classList.remove('uf-neon-glow-running');
+    ${p.animation ? "if(on){void toggle.offsetWidth;toggle.classList.add('uf-neon-glow-running');timer=setTimeout(function(){toggle.classList.remove('uf-neon-glow-running');},900);}" : ""}
+  });
+})();`,
+  }),
+};

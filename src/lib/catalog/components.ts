@@ -1,5 +1,5 @@
 import { alpha, SIZES, type Item, type ControlKey } from "./types";
-import { frutigerAeroButtonItem, geoOrbitButtonItem, modernButtonItems } from "./modern-buttons";
+import { flipKnobToggleItem, frutigerAeroButtonItem, geoOrbitButtonItem, hamburgerMorphButtonItem, modernButtonItems, neonGlowToggleItem } from "./modern-buttons";
 
 const BTN: ControlKey[] = ["primary", "secondary", "bg", "size", "radius", "weight", "shadow", "animation"];
 
@@ -1288,4 +1288,7 @@ ${p.animation ? "" : ".uf-walk-character,.uf-walk-track,.uf-walk-track::before,.
   ...modernButtonItems,
   frutigerAeroButtonItem,
   geoOrbitButtonItem,
+  hamburgerMorphButtonItem,
+  flipKnobToggleItem,
+  neonGlowToggleItem,
 ];

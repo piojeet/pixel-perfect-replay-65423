@@ -579,3 +579,356 @@ ${p.animation ? `.uf-neon-glow-toggle.uf-neon-glow-running .uf-neon-glow-spark,.
 })();`,
   }),
 };
+
+export const threeDPushToggleItem: Item = {
+  slug: "3d-push-toggle",
+  name: "3D Push Toggle",
+  kind: "component",
+  category: "toggles",
+  description: "A tactile power button that sinks into its base and lights up when pressed.",
+  controls: ["animation"],
+  defaults: { radius: 50 },
+  added: 82,
+  build: (p) => ({
+    html: `<div class="uf-3d-push-scene"><div class="uf-3d-push-floor" aria-hidden="true"></div><div class="uf-3d-push-ring" aria-hidden="true"></div><button type="button" class="uf-3d-push-button" aria-pressed="false" aria-label="Power"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"></path><path d="M7.2 6.3a8 8 0 1 0 9.6 0"></path></svg></button></div>`,
+    css: `.uf-3d-push-scene {
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:280px;
+  height:190px;
+}
+.uf-3d-push-ring {
+  position:absolute;
+  top:26px;
+  left:15px;
+  width:250px;
+  height:150px;
+  border:3px solid #26253f;
+  border-radius:50%;
+  box-shadow:0 0 0 7px #ffffff05,0 0 0 8px #ffffff0a;
+  ${p.animation ? "transition:border-color .35s .1s,box-shadow .45s .1s;" : ""}
+}
+.uf-3d-push-floor {
+  position:absolute;
+  top:36px;
+  left:25px;
+  width:230px;
+  height:130px;
+  border-radius:50%;
+  background:radial-gradient(#28a8ff55,#0000 70%);
+  opacity:0;
+  ${p.animation ? "transition:opacity .5s .1s;" : ""}
+}
+.uf-3d-push-button {
+  position:relative;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  width:176px;
+  height:110px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 30%,#5d5b9a,#3d3c72 70%);
+  box-shadow:inset 0 2px 3px #ffffff30,inset 0 -6px 12px #0003,0 3px #2e2d66,0 6px #282760,0 9px #23225a,0 12px #1e1d52,0 15px #19184a,0 18px #141340,0 28px 28px #000a;
+  transform:translateY(-6px);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  ${p.animation ? "transition:transform .16s cubic-bezier(.5,0,.8,.4),box-shadow .16s,background .35s;" : ""}
+}
+.uf-3d-push-button:active { transform:translateY(12px); }
+.uf-3d-push-button:focus-visible { outline:2px solid #28c8ff; outline-offset:14px; }
+.uf-3d-push-button svg {
+  width:56px;
+  height:56px;
+  fill:none;
+  stroke:#aaa8dc;
+  stroke-width:3.2;
+  stroke-linecap:round;
+  transform:scaleY(.66);
+  ${p.animation ? "transition:stroke .35s .1s,filter .4s .1s;" : ""}
+}
+.uf-3d-push-button[aria-pressed="true"] {
+  transform:translateY(10px);
+  background:radial-gradient(ellipse at 50% 30%,#5058d8,#3030a0 70%);
+  box-shadow:inset 0 2px 3px #ffffff30,inset 0 -6px 12px #0003,0 2px #2a2a86,0 4px #202070,0 6px #181860,0 10px 16px #000b;
+  ${p.animation ? "transition:transform .12s ease-in,box-shadow .12s,background .35s;" : ""}
+}
+.uf-3d-push-button[aria-pressed="true"]:active { transform:translateY(12px); }
+.uf-3d-push-button[aria-pressed="true"] svg { stroke:#8eeaff; filter:drop-shadow(0 0 5px #28c8ff) drop-shadow(0 0 12px #28c8ff); }
+.uf-3d-push-scene.uf-3d-push-on .uf-3d-push-ring {
+  border-color:#28c8ff;
+  box-shadow:0 0 0 7px #ffffff05,0 0 16px 2px #28c8ff,0 0 40px 6px #28c8ff66,inset 0 0 16px #28c8ff77;
+}
+.uf-3d-push-scene.uf-3d-push-on .uf-3d-push-floor { opacity:1; }
+.uf-3d-push-ring.uf-3d-push-pulse { ${p.animation ? "animation:uf-3d-push-pulse .6s ease-out;" : ""} }
+${p.animation ? "@keyframes uf-3d-push-pulse { 40% { transform:scale(1.07); filter:brightness(1.6); } }" : ""}
+@media (prefers-reduced-motion:reduce) { .uf-3d-push-button,.uf-3d-push-button svg,.uf-3d-push-ring,.uf-3d-push-floor { transition:none!important; animation:none!important; } }`,
+    js: `(function(){
+  var scene=document.querySelector('.uf-3d-push-scene');
+  var button=scene.querySelector('.uf-3d-push-button');
+  var ring=scene.querySelector('.uf-3d-push-ring');
+  button.addEventListener('click',function(){
+    var on=button.getAttribute('aria-pressed')!=='true';
+    button.setAttribute('aria-pressed',on);
+    scene.classList.toggle('uf-3d-push-on',on);
+    ring.classList.remove('uf-3d-push-pulse');
+    ${p.animation ? "if(on){void ring.offsetWidth;ring.classList.add('uf-3d-push-pulse');}" : ""}
+  });
+})();`,
+  }),
+};
+
+export const beadLineItem: Item = {
+  slug: "bead-line-stepper",
+  name: "Bead Line Stepper",
+  kind: "component",
+  category: "progress",
+  description: "A glowing bead moves along a clickable multi-step progress line.",
+  controls: ["primary", "secondary", "bg", "speed", "animation"],
+  defaults: { radius: 999, primary: "#6D7DFF", secondary: "#38C8FF", bg: "#10101A", speed: 650 },
+  added: 83,
+  build: (p) => ({
+    html: `<div class="uf-bead-line"><div class="uf-bead-line-track"><div class="uf-bead-line-rail"></div><div class="uf-bead-line-fill"></div><div class="uf-bead-line-bead uf-bead-line-idle"><b></b><i></i></div></div></div>`,
+    css: `.uf-bead-line {
+  --uf-bead-violet:${p.primary};
+  --uf-bead-cyan:${p.secondary};
+  --uf-bead-dim:#2b2a42;
+  --uf-bead-text:#f1f0fa;
+  --uf-bead-muted:#8d8ba8;
+  --uf-bead-bg:${p.bg};
+  width:min(460px,100%);
+  color:var(--uf-bead-text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.uf-bead-line-track { position:relative; height:96px; margin:0 44px; }
+.uf-bead-line-rail,.uf-bead-line-fill {
+  position:absolute;
+  top:14px;
+  left:0;
+  height:4px;
+  margin-top:-2px;
+  border-radius:4px;
+}
+.uf-bead-line-rail { right:0; background:var(--uf-bead-dim); }
+.uf-bead-line-fill {
+  width:0;
+  background:linear-gradient(90deg,var(--uf-bead-violet),var(--uf-bead-cyan));
+  box-shadow:0 0 12px #4d8dff99;
+  ${p.animation ? "transition:width var(--uf-bead-t,.65s) cubic-bezier(.45,0,.25,1);" : ""}
+}
+.uf-bead-line-step {
+  position:absolute;
+  top:0;
+  width:90px;
+  margin-left:-45px;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--uf-bead-muted);
+  text-align:center;
+  font:600 14px system-ui,sans-serif;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.uf-bead-line-dot {
+  display:grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  margin:0 auto 14px;
+  border-radius:50%;
+  background:var(--uf-bead-bg);
+  box-shadow:inset 0 0 0 3px var(--uf-bead-dim);
+  ${p.animation ? "transition:background .4s,box-shadow .4s;" : ""}
+}
+.uf-bead-line-dot svg { width:15px; height:15px; fill:none; stroke:#fff; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:24; stroke-dashoffset:24; ${p.animation ? "transition:stroke-dashoffset .4s .1s;" : ""} }
+.uf-bead-line-step.uf-bead-line-on { color:var(--uf-bead-text); }
+.uf-bead-line-step.uf-bead-line-on .uf-bead-line-dot { background:linear-gradient(135deg,var(--uf-bead-violet),var(--uf-bead-cyan)); box-shadow:0 0 14px 2px ${alpha(p.primary, 0.53)},inset 0 1px #fff5; }
+.uf-bead-line-step.uf-bead-line-on:last-child .uf-bead-line-dot svg { stroke-dashoffset:0; }
+.uf-bead-line-step:focus-visible { outline:2px solid var(--uf-bead-cyan); outline-offset:2px; border-radius:10px; }
+.uf-bead-line-bead { position:absolute; top:14px; left:0; width:0; height:0; ${p.animation ? "transition:left var(--uf-bead-t,.65s) cubic-bezier(.45,0,.25,1);" : ""} }
+.uf-bead-line-bead i {
+  position:absolute;
+  top:-10px;
+  left:-10px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff 0,${p.secondary} 45%,${p.secondary} 80%);
+  box-shadow:0 0 14px 4px ${alpha(p.secondary, 0.8)},0 0 34px 10px ${alpha(p.primary, 0.4)};
+}
+.uf-bead-line-bead b { position:absolute; top:-3px; right:0; width:70px; height:6px; border-radius:6px; background:linear-gradient(90deg,${alpha(p.secondary, 0)},${alpha(p.secondary, 0.6)}); filter:blur(2px); opacity:0; ${p.animation ? "transition:opacity .3s;" : ""} }
+.uf-bead-line-bead.uf-bead-line-run b { opacity:1; }
+.uf-bead-line-bead.uf-bead-line-reverse b { right:auto; left:0; transform:scaleX(-1); }
+.uf-bead-line-bead.uf-bead-line-idle i { ${p.animation ? "animation:uf-bead-line-breathe 1.8s ease-in-out infinite;" : ""} }
+${p.animation ? `@keyframes uf-bead-line-breathe { 50% { transform:scale(1.25); box-shadow:0 0 18px 6px ${alpha(p.secondary, 0.8)},0 0 44px 14px ${alpha(p.primary, 0.4)}; } }` : ""}
+@media (prefers-reduced-motion:reduce) { .uf-bead-line-fill,.uf-bead-line-bead,.uf-bead-line-dot,.uf-bead-line-dot svg,.uf-bead-line-bead b { transition:none!important; } .uf-bead-line-bead.uf-bead-line-idle i { animation:none; } }`,
+    js: `(function(){
+  var root=document.querySelector('.uf-bead-line');
+  var track=root.querySelector('.uf-bead-line-track');
+  var fill=root.querySelector('.uf-bead-line-fill');
+  var bead=root.querySelector('.uf-bead-line-bead');
+  var labels=["Account","Profile","Plan","Done"];
+  var current=0,busy=false,timers=[];
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches||${!p.animation};
+  var segment=${p.speed};
+  var steps=labels.map(function(label,index){
+    var step=document.createElement('button');
+    step.type='button';
+    step.className='uf-bead-line-step';
+    step.style.left=(index/(labels.length-1))*100+'%';
+    step.innerHTML='<span class="uf-bead-line-dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>'+label;
+    step.addEventListener('click',function(){go(index);});
+    track.appendChild(step);
+    return step;
+  });
+  function percent(index){return (index/(labels.length-1))*100+'%';}
+  function place(index){
+    fill.style.width=percent(index);
+    bead.style.left=percent(index);
+    steps.forEach(function(step,i){step.classList.toggle('uf-bead-line-on',i<=index);});
+  }
+  function go(target){
+    if(busy||target===current||target<0||target>=labels.length)return;
+    if(reduce){current=target;place(target);return;}
+    var distance=Math.abs(target-current),direction=target>current?1:-1,duration=segment*distance;
+    busy=true;
+    timers.forEach(clearTimeout);
+    timers=[];
+    track.style.setProperty('--uf-bead-t',duration+'ms');
+    bead.classList.remove('uf-bead-line-idle');
+    bead.classList.toggle('uf-bead-line-reverse',direction<0);
+    bead.classList.add('uf-bead-line-run');
+    fill.style.width=percent(target);
+    bead.style.left=percent(target);
+    for(var k=1;k<=distance;k++){
+      (function(stepIndex){
+        var index=current+direction*stepIndex;
+        if(direction>0)timers.push(setTimeout(function(){steps[index].classList.add('uf-bead-line-on');},segment*stepIndex*.82));
+        else timers.push(setTimeout(function(){steps[index+1].classList.remove('uf-bead-line-on');},segment*(stepIndex-1)+segment*.18));
+      })(k);
+    }
+    timers.push(setTimeout(function(){
+      current=target;
+      busy=false;
+      bead.classList.remove('uf-bead-line-run');
+      bead.classList.add('uf-bead-line-idle');
+    },duration+40));
+  }
+  place(0);
+})();`,
+  }),
+};
+
+export const backNextStepperItem: Item = {
+  slug: "back-next-stepper",
+  name: "Back & Next Stepper",
+  kind: "component",
+  category: "progress",
+  description: "A guided four-step flow with animated progress dots and Back/Next controls.",
+  controls: [],
+  added: 84,
+  build: () => ({
+    html: `<div class="uf-back-next-stepper"><div class="uf-bn-dots"></div><div class="uf-bn-title"><h2>Account</h2></div><p class="uf-bn-status">Step 1 of 4</p><div class="uf-bn-row"><button type="button" class="uf-bn-button uf-bn-back" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"></path></svg>Back</button><button type="button" class="uf-bn-button uf-bn-next">Next<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg></button></div></div>`,
+    css: `.uf-back-next-stepper {
+  width:min(380px,100%);
+  color:#fff;
+  text-align:center;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.uf-bn-dots { display:flex; align-items:center; padding:0 10px; margin-bottom:26px; }
+.uf-bn-dot { flex:none; width:18px; height:18px; border-radius:50%; box-shadow:inset 0 0 0 2.5px #2b2a42; background:#10101a; transition:background .4s,box-shadow .4s; }
+.uf-bn-dot.uf-bn-done { background:linear-gradient(135deg,#7c6cff,#6a8cff); box-shadow:none; }
+.uf-bn-dot.uf-bn-active { background:#c6ecff; box-shadow:0 0 0 3px #10101a,0 0 0 5px #4d78ff,0 0 16px 4px #4d8dffaa; }
+.uf-bn-segment { flex:1; height:4px; margin:0 6px; border-radius:4px; background:#2b2a42; overflow:hidden; }
+.uf-bn-segment i { display:block; height:100%; border-radius:4px; background:linear-gradient(90deg,#7c6cff,#38c8ff); transform:scaleX(0); transform-origin:left; transition:transform .55s cubic-bezier(.65,0,.35,1); }
+.uf-bn-segment.uf-bn-full i { transform:scaleX(1); }
+.uf-back-next-stepper.uf-bn-forward .uf-bn-dot { transition-delay:.45s; }
+.uf-back-next-stepper.uf-bn-forward .uf-bn-segment i { transition-delay:0s; }
+.uf-back-next-stepper.uf-bn-backward .uf-bn-dot { transition-delay:0s; }
+.uf-back-next-stepper.uf-bn-backward .uf-bn-segment i { transition-delay:.2s; }
+.uf-bn-title { height:40px; overflow:hidden; }
+.uf-bn-title h2 { margin:0; font-size:30px; line-height:40px; letter-spacing:-.02em; }
+.uf-bn-status { margin:6px 0 30px; color:#8d8ba8; font-size:13px; }
+.uf-bn-row { display:flex; gap:12px; }
+.uf-bn-button { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:54px; border-radius:999px; color:#fff; font:700 15px system-ui,sans-serif; cursor:pointer; transition:transform .15s,opacity .25s,box-shadow .3s; -webkit-tap-highlight-color:transparent; }
+.uf-bn-button svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+.uf-bn-back { border:2px solid #7c6cff; background:transparent; box-shadow:0 0 14px -4px #7c6cff88; }
+.uf-bn-next { border:0; background:linear-gradient(135deg,#7c6cff,#38c8ff); box-shadow:0 10px 26px -8px #4d8dffaa; }
+.uf-bn-button:active:not(:disabled) { transform:scale(.95); }
+.uf-bn-button:disabled { opacity:.3; cursor:default; }
+.uf-bn-button:focus-visible { outline:2px solid #38c8ff; outline-offset:3px; }
+@media (prefers-reduced-motion:reduce) { .uf-bn-dot,.uf-bn-segment i,.uf-bn-button { transition:none!important; } }`,
+    js: `(function(){
+  var titles=["Account","Profile","Plan","Done"];
+  var current=0,busy=false;
+  var root=document.querySelector('.uf-back-next-stepper');
+  var dots=root.querySelector('.uf-bn-dots');
+  var heading=root.querySelector('.uf-bn-title h2');
+  var status=root.querySelector('.uf-bn-status');
+  var back=root.querySelector('.uf-bn-back');
+  var next=root.querySelector('.uf-bn-next');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dotNodes=[],segments=[];
+  titles.forEach(function(_,index){
+    var dot=document.createElement('span');
+    dot.className='uf-bn-dot';
+    dots.appendChild(dot);
+    dotNodes.push(dot);
+    if(index<titles.length-1){
+      var segment=document.createElement('span');
+      segment.className='uf-bn-segment';
+      segment.innerHTML='<i></i>';
+      dots.appendChild(segment);
+      segments.push(segment);
+    }
+  });
+  function paint(step){
+    dotNodes.forEach(function(dot,index){
+      dot.className='uf-bn-dot'+(index<step?' uf-bn-done':index===step?' uf-bn-active':'');
+    });
+    segments.forEach(function(segment,index){
+      segment.className='uf-bn-segment'+(index<step?' uf-bn-full':'');
+    });
+    back.disabled=step===0;
+    next.disabled=step===titles.length-1;
+  }
+  function slide(element,text,direction){
+    if(reduce){element.textContent=text;return Promise.resolve();}
+    return element.animate(
+      [{transform:'translateX(0)',opacity:1},{transform:'translateX('+(-26*direction)+'px)',opacity:0}],
+      {duration:200,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'}
+    ).finished.then(function(){
+      element.textContent=text;
+      return element.animate(
+        [{transform:'translateX('+(26*direction)+'px)',opacity:0},{transform:'translateX(0)',opacity:1}],
+        {duration:380,easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'}
+      ).finished;
+    });
+  }
+  function go(direction){
+    var target=current+direction;
+    if(busy||target<0||target>=titles.length)return;
+    busy=true;
+    root.classList.toggle('uf-bn-forward',direction>0);
+    root.classList.toggle('uf-bn-backward',direction<0);
+    current=target;
+    paint(target);
+    Promise.all([
+      slide(heading,titles[target],direction),
+      slide(status,'Step '+(target+1)+' of '+titles.length,direction)
+    ]).then(function(){
+      [heading,status].forEach(function(element){
+        element.getAnimations().forEach(function(animation){animation.cancel();});
+      });
+      busy=false;
+    });
+  }
+  next.addEventListener('click',function(){go(1);});
+  back.addEventListener('click',function(){go(-1);});
+  paint(current);
+})();`,
+  }),
+};

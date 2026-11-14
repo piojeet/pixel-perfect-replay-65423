@@ -169,7 +169,7 @@ export function Playground({ item, backTo }: { item: Item; backTo: { href: "/com
             {has("radius") && <SliderRow label="Border radius" value={p.radius} min={0} max={32} unit="px" onChange={(v) => set("radius", v)} />}
             {has("weight") && <SliderRow label="Font weight" value={p.weight} min={400} max={800} step={100} onChange={(v) => set("weight", v)} />}
             {has("padding") && <SliderRow label={item.kind === "background" ? "Pattern size" : "Padding"} value={p.padding} min={8} max={64} unit="px" onChange={(v) => set("padding", v)} />}
-            {has("speed") && <SliderRow label={item.kind === "component" ? "Spin duration" : "Speed / duration"} value={p.speed} min={1} max={20} unit={item.slug === "particle-background" ? "" : item.kind === "component" ? "s" : ""} onChange={(v) => set("speed", v)} />}
+            {has("speed") && <SliderRow label={item.slug === "bead-line-stepper" ? "Step duration" : item.kind === "component" ? "Spin duration" : "Speed / duration"} value={p.speed} min={item.slug === "bead-line-stepper" ? 100 : 1} max={item.slug === "bead-line-stepper" ? 2000 : 20} unit={item.slug === "bead-line-stepper" ? "ms" : item.slug === "particle-background" ? "" : item.kind === "component" ? "s" : ""} onChange={(v) => set("speed", v)} />}
             {has("intensity") && <SliderRow label="Intensity" value={p.intensity} min={5} max={100} onChange={(v) => set("intensity", v)} />}
             {has("shadow") && (
               <label className="flex items-center justify-between text-sm">Shadow <Switch checked={p.shadow} onCheckedChange={(v) => set("shadow", v)} /></label>

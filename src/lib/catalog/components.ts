@@ -1,5 +1,13 @@
 import { alpha, SIZES, type Item, type ControlKey } from "./types";
-import { flipKnobToggleItem, frutigerAeroButtonItem, geoOrbitButtonItem, hamburgerMorphButtonItem, modernButtonItems, neonGlowToggleItem } from "./modern-buttons";
+import { backNextStepperItem, beadLineItem, flipKnobToggleItem, frutigerAeroButtonItem, geoOrbitButtonItem, hamburgerMorphButtonItem, modernButtonItems, neonGlowToggleItem, threeDPushToggleItem } from "./modern-buttons";
+import { levelBlocksItem } from "./level-blocks";
+import { bigNumberItem } from "./big-number";
+import { skillPathItem } from "./skill-path";
+import { haloTraceItem } from "./halo-trace";
+import { snapBracketsItem } from "./snap-brackets";
+import { riseLandItem } from "./rise-land";
+import { sideWipeItem } from "./side-wipe";
+import { dotSwellItem } from "./dot-swell";
 
 const BTN: ControlKey[] = ["primary", "secondary", "bg", "size", "radius", "weight", "shadow", "animation"];
 
@@ -1291,4 +1299,15 @@ ${p.animation ? "" : ".uf-walk-character,.uf-walk-track,.uf-walk-track::before,.
   hamburgerMorphButtonItem,
   flipKnobToggleItem,
   neonGlowToggleItem,
+  threeDPushToggleItem,
+  beadLineItem,
+  backNextStepperItem,
+  levelBlocksItem,
+  bigNumberItem,
+  skillPathItem,
+  haloTraceItem,
+  snapBracketsItem,
+  riseLandItem,
+  sideWipeItem,
+  dotSwellItem,
 ];

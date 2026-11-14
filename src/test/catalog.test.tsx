@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { ALL_ITEMS, CATEGORIES, componentItems, backgroundItems, effectItems, findItem, paramsFor } from "@/lib/catalog";
 
 describe("catalog", () => {
-  it("ships 81 components, 12 backgrounds and 12 effects", () => {
-    expect(componentItems).toHaveLength(81);
+  it("ships 92 components, 12 backgrounds and 12 effects", () => {
+    expect(componentItems).toHaveLength(92);
     expect(backgroundItems).toHaveLength(12);
     expect(effectItems).toHaveLength(12);
   });
@@ -227,5 +227,202 @@ describe("catalog", () => {
     const staticBuild = item.build({ ...paramsFor(item), animation: false });
     expect(staticBuild.css).not.toContain("@keyframes uf-neon-glow-race");
     expect(staticBuild.js).not.toContain("toggle.offsetWidth");
+  });
+
+  it("adds 3D Push Toggle with an accessible power control and active state", () => {
+    const item = findItem("component", "3d-push-toggle");
+    expect(item?.category).toBe("toggles");
+    if (!item) throw new Error("3D Push Toggle is missing from the catalog");
+
+    const animated = item.build({ ...paramsFor(item), animation: true });
+    expect(animated.html).toContain('aria-pressed="false" aria-label="Power"');
+    expect(animated.html).not.toContain("<body");
+    expect(animated.css).toContain(".uf-3d-push-scene.uf-3d-push-on .uf-3d-push-ring");
+    expect(animated.css).toContain("@keyframes uf-3d-push-pulse");
+    expect(animated.js).toContain("aria-pressed");
+    expect(animated.js).toContain("uf-3d-push-on");
+
+    const staticBuild = item.build({ ...paramsFor(item), animation: false });
+    expect(staticBuild.css).not.toContain("@keyframes uf-3d-push-pulse");
+    expect(staticBuild.js).not.toContain("ring.offsetWidth");
+  });
+
+  it("adds Bead Line Stepper under Progress Bar with interactive progress", () => {
+    const item = findItem("component", "bead-line-stepper");
+    expect(item?.category).toBe("progress");
+    expect(CATEGORIES.component.some((category) => category.slug === "progress" && category.label === "Progress Bar")).toBe(true);
+    if (!item) throw new Error("Bead Line Stepper is missing from the catalog");
+
+    expect(item.controls).toEqual(["primary", "secondary", "bg", "speed", "animation"]);
+    const animated = item.build({ ...paramsFor(item), primary: "#123456", secondary: "#ABCDEF", bg: "#202020", speed: 900, animation: true });
+    expect(animated.html).toContain("uf-bead-line-track");
+    expect(animated.html).not.toContain("<body");
+    expect(animated.css).toContain("--uf-bead-violet:#123456");
+    expect(animated.css).toContain("--uf-bead-cyan:#ABCDEF");
+    expect(animated.css).toContain("--uf-bead-bg:#202020");
+    expect(animated.css).toContain("@keyframes uf-bead-line-breathe");
+    expect(animated.js).toContain('["Account","Profile","Plan","Done"]');
+    expect(animated.js).toContain("function go(target)");
+    expect(animated.js).toContain("var segment=900");
+    expect(animated.js).toContain("uf-bead-line-on");
+
+    const staticBuild = item.build({ ...paramsFor(item), animation: false });
+    expect(staticBuild.css).not.toContain("@keyframes uf-bead-line-breathe");
+    expect(staticBuild.js).toContain("var reduce=window.matchMedia");
+  });
+
+  it("adds Back & Next Stepper under Progress Bar with bounded step navigation", () => {
+    const item = findItem("component", "back-next-stepper");
+    expect(item?.category).toBe("progress");
+    if (!item) throw new Error("Back & Next Stepper is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain("Step 1 of 4");
+    expect(built.html).toContain('class="uf-bn-button uf-bn-back" disabled');
+    expect(built.html).not.toContain("<body");
+    expect(built.css).toContain(".uf-bn-segment.uf-bn-full i");
+    expect(built.js).toContain('["Account","Profile","Plan","Done"]');
+    expect(built.js).toContain("if(busy||target<0||target>=titles.length)return");
+    expect(built.js).toContain("next.addEventListener('click'");
+    expect(built.js).toContain("back.addEventListener('click'");
+  });
+
+  it("adds Level Blocks under Progress Bar with no autoplay and clickable steps", () => {
+    const item = findItem("component", "level-blocks");
+    expect(item?.category).toBe("progress");
+    if (!item) throw new Error("Level Blocks is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('aria-label="Choose a progress step"');
+    expect(built.html).not.toContain("<body");
+    expect(built.js).toContain("placeBall(current)");
+    expect(built.js).toContain("block.addEventListener('click',function(){go(index);})");
+    expect(built.js).toContain("function go(target)");
+    expect(built.js).not.toContain("run();");
+    expect(built.js).not.toContain("stage.addEventListener('click'");
+  });
+
+  it("adds Big Number under Progress Bar with split-flap steps and restart", () => {
+    const item = findItem("component", "big-number");
+    expect(item?.category).toBe("progress");
+    if (!item) throw new Error("Big Number is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain(">Account</h2>");
+    expect(built.html).toContain('aria-label="Next"');
+    expect(built.html).not.toContain("<body");
+    expect(built.css).toContain(".uf-big-number-flap-top");
+    expect(built.js).toContain('["Account","Profile","Plan","Done"]');
+    expect(built.js).toContain("label.textContent=isLast?'Restart':'Next'");
+    expect(built.js).toContain("button.addEventListener('click'");
+    expect(built.js).toContain("window.matchMedia('(prefers-reduced-motion: reduce)')");
+  });
+
+  it("adds Skill Path under Progress Bar with locked steps and trophy restart", () => {
+    const item = findItem("component", "skill-path");
+    expect(item?.category).toBe("progress");
+    if (!item) throw new Error("Skill Path is missing from the catalog");
+
+    expect(item.controls).toEqual(["primary", "secondary", "bg", "animation"]);
+    const built = item.build({ ...paramsFor(item), primary: "#123456", secondary: "#ABCDEF", bg: "#202020" });
+    expect(built.html).toContain(">Tap the glowing node</div>");
+    expect(built.html).not.toContain("<body");
+    expect(built.css).toContain("--uf-skill-primary:#123456");
+    expect(built.css).toContain("--uf-skill-secondary:#ABCDEF");
+    expect(built.css).toContain("--uf-skill-bg:#202020");
+    expect(built.css).toContain("#123456");
+    expect(built.js).toContain('["Account",50,168,"bottom"]');
+    expect(built.js).toContain("var start=[18,52,86]");
+    expect(built.js).toContain("node.disabled=state==='locked'");
+    expect(built.js).toContain("if(index!==current)return");
+    expect(built.js).toContain("hint.textContent='All done! Tap the trophy to restart'");
+    expect(built.js).toContain("if(current===4){reset();return;}");
+
+    const staticBuild = item.build({ ...paramsFor(item), animation: false });
+    expect(staticBuild.css).not.toContain("@keyframes uf-skill-path-current-bounce");
+    expect(staticBuild.js).toContain("matches||true");
+  });
+
+  it("adds Halo Trace date picker under Date Pickers with weekly navigation and selection", () => {
+    const item = findItem("component", "halo-trace-date-picker");
+    expect(item?.category).toBe("date-pickers");
+    if (!item) throw new Error("Halo Trace Date Picker is missing from the catalog");
+    expect(item.controls).toEqual(["primary", "secondary", "bg", "animation"]);
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('aria-label="Previous week"');
+    expect(built.html).toContain('aria-label="Next week"');
+    expect(built.html).not.toContain("<body");
+    expect(built.js).toContain("var base=new Date(2026,10,15),selected=1");
+    expect(built.js).toContain("function changeWeek(direction)");
+    expect(built.js).toContain("async function pick(index)");
+    expect(built.js).toContain("slots(date)+\" slots\"");
+    expect(built.js).toContain("strokeDashoffset:100");
+
+    const customized = item.build({
+      ...paramsFor(item),
+      primary: "#112233",
+      secondary: "#445566",
+      animation: false,
+    });
+    expect(customized.html).toContain('stop-color="#445566"');
+    expect(customized.css).toContain("linear-gradient(180deg,#112233,#445566)");
+    expect(customized.js).toContain("matches||true");
+  });
+
+  it("adds Snap Brackets under Date Pickers with bracket selection animation", () => {
+    const item = findItem("component", "snap-brackets-date-picker");
+    expect(item?.category).toBe("date-pickers");
+    if (!item) throw new Error("Snap Brackets is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('aria-label="Previous week"');
+    expect(built.html).toContain('class="uf-sb-frame"');
+    expect(built.css).toContain(".uf-sb-frame span:nth-child(4)");
+    expect(built.js).toContain("function frameBox(index,widthDelta,heightDelta)");
+    expect(built.js).toContain("async function pick(index)");
+    expect(built.js).toContain("function changeWeek(direction)");
+    expect(built.js).toContain("prefers-reduced-motion: reduce");
+  });
+
+  it("adds Rise & Land under Date Pickers with spring-like selection behavior", () => {
+    const item = findItem("component", "rise-land-date-picker");
+    expect(item?.category).toBe("date-pickers");
+    if (!item) throw new Error("Rise & Land is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('class="uf-rl-shadow"');
+    expect(built.html).toContain('aria-label="Next week"');
+    expect(built.css).toContain("linear-gradient(180deg,#6c6cff,#3fa8ff)");
+    expect(built.js).toContain("function riseLand(withOpacity)");
+    expect(built.js).toContain("scale(1.18,.8)");
+    expect(built.js).toContain("prefers-reduced-motion: reduce");
+  });
+
+  it("adds Side Wipe under Date Pickers with directional selection wipes", () => {
+    const item = findItem("component", "side-wipe-date-picker");
+    expect(item?.category).toBe("date-pickers");
+    if (!item) throw new Error("Side Wipe is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('aria-label="Previous week"');
+    expect(built.js).toContain("var visibleClip=");
+    expect(built.js).toContain("var goneLeft=");
+    expect(built.js).toContain("var goneRight=");
+    expect(built.js).toContain("direction>0?goneLeft:goneRight");
+    expect(built.js).toContain("setTimeout(function(){if(id===run)");
+  });
+
+  it("adds Dot Swell under Date Pickers with dot-to-capsule selection animation", () => {
+    const item = findItem("component", "dot-swell-date-picker");
+    expect(item?.category).toBe("date-pickers");
+    if (!item) throw new Error("Dot Swell is missing from the catalog");
+
+    const built = item.build(paramsFor(item));
+    expect(built.html).toContain('class="uf-ds-pill uf-ds-ghost"');
+    expect(built.js).toContain('var dotTransform="scale(.18,.11)"');
+    expect(built.js).toContain("async function pick(index)");
+    expect(built.js).toContain("duration:820");
+    expect(built.js).toContain("prefers-reduced-motion: reduce");
   });
 });
